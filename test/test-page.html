@@ -6,114 +6,123 @@
   <script type="text/javascript" src="../build/ng-tags-input.js"></script>
   <link rel="stylesheet" href="../build/ng-tags-input.css"/>
   <style>
-    .foo .tags .input {
+    .foo .tags .tag-input {
       font-size: 16px;
       font-weight: bold;
       letter-spacing: 4px;
       border-left: 3px solid;
       padding-left: 3px;
     }
-
-    .foo .tags .input {
-      width: 1036px;
-    }
-
-    .foo.ng-pristine .tags {
-      background-color: green;
-    }
-    .foo.ng-dirty .tags {
-      background-color: brown;
-    }
-    .foo.ng-valid .tags {
-      background-color: yellow;
-    }
-    .foo.ng-invalid .tags {
-      background-color: red;
-    }
-
-    .foo .autocomplete .suggestion-item.selected {
-      background-color: green;
-    }
   </style>
 </head>
 <body ng-controller="Ctrl">
-  <tags-input style="display: none" class="foo" ng-model="tags" limit-tags="5"
-              replace-spaces-with-dashes="true"
-              enable-editing-last-tag="true"
-              placeholder="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-              min-tags="3">
-    <auto-complete source="loadItems($query)"
-                   debounce-delay="0"
-                   min-length="1"
-                   max-results-to-show="10">
-    </auto-complete>
-  </tags-input>
-  <tags-input ng-init="tags2=['item1', 'item2', 'item3']" ng-model="tags2" display-property="label" add-on-blur="true">
-    <auto-complete source="loadItems2($query)"
-                   debounce-delay="0"
-                   min-length="1"
-                   max-results-to-show="10">
-    </auto-complete>
-  </tags-input>
+
+    <span data-tags-input 
+        id="test"
+        ng-model="tags"
+        custom-class="foo"
+        replace-spaces-with-dashes="false"
+        add-on-blur="true"
+        min-tags="5">
+
+        <span data-auto-complete source="loadItems($query)"
+            debounce-delay="0"
+            min-length="1"
+            max-results-to-show="10">
+        </span>
+
+  </span>
+
+  <span data-tags-input ng-model="tags" id="repeatTest"></span>
 
   <input type="text"/>
 
   <script type="text/javascript">
     angular.module('app', ['ngTagsInput'])
         .controller('Ctrl', function($scope, $q, $timeout) {
-            var superheroes = [
-              { text: 'Batman <bruce@wayne.com>' },
-              { text: 'Superman' },
-              { text: 'Flash' },
-              { text: 'Iron Man' },
-              { text: 'Hulk' },
-              { text: 'Wolverine' },
-              { text: 'Green Lantern' },
-              { text: 'Green Arrow' },
-              { text: 'Spiderman'}
-            ];
+            var ctxTags = 
+                [{
+                    "id": "1",
+                    "label": "movie scene",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "tt01",
+                    "categories": ["text type"] 
+                },
+                {
+                    "id": "2",
+                    "label": "documentary",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "tt02",
+                    "categories": ["text type" ]  
+                },
+                {
+                    "id": "3",
+                    "label": "broadcast",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "tt03",
+                    "categories": ["text type" ] 
+                },
+                {
+                    "id": "4",
+                    "label": "speech",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "tt04" ,
+                    "categories": ["text type"] 
+                },
+                {
+                    "id": "7",
+                    "label": "british",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "td07",
+                    "categories": ["text dialect"]  
+                }];
 
-            $scope.tags = [{ text: 'Batman' }, { text: 'Superman' }, { text:'Flash' }];
-            $scope.placeholder = {value: "New tag" };
-            $scope.loadItems = function(query) {
-              console.log(query);
-              var deferred = $q.defer();
-              var items = [];
-              for (var i = 0; i < superheroes.length; i++) {
-                if (superheroes[i].text.indexOf(query) > -1) {
-                  items.push(superheroes[i]);
-                }
-              }
-              $timeout(function() {
-                deferred.resolve(items);
-              }, 2000);
-              return deferred.promise;
-            };
+            $scope.tags = [{
+                    "id": "1",
+                    "label": "movie scene",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "tt01",
+                    "categories": ["text type"] 
+                },
+                {
+                    "id": "2",
+                    "label": "documentary",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum.",
+                    "compassId": "tt02",
+                    "categories": ["text type" ]  
+                }];
 
-            $scope.loadItems2 = function(query) {
-                var deferred = $q.defer();
-                deferred.resolve(['Item1', 'Item2', 'Item3', 'Item4', 'Item5']);
-                return deferred.promise;
-            }
-        })
-        .directive('limitTags', function() {
-          return {
-            require: 'ngModel',
-            link: function(scope, elem, attrs, ngModel) {
-                var max = parseInt(attrs.limitTags, 10);
-                ngModel.$parsers.unshift(function(value) {
-                    if (value && value.length > max) {
-                      value.splice(value.length - 1, 1);
+
+            $scope.placeholder = { value: "New tag" };
+
+            $scope.loadItems = function(data) {
+                
+                var deferred = $q.defer(),
+                    items = [],
+                    query = data.keywords;
+
+                console.log(data);
+
+                for (var i = 0; i < ctxTags.length; i++) {
+                    if (ctxTags[i].label.indexOf(query) > -1) {
+                        items.push(ctxTags[i]);
                     }
-                    return value;
-                });
-            }
-          };
+                };
+
+                $timeout(function() {
+                        deferred.resolve(items);
+                    }, 1000);
+
+                return deferred.promise;
+
+            };
         })
+
         .config(function(tagsInputConfigProvider) {
             tagsInputConfigProvider
               .setDefaults('tagsInput', {
-                placeholder: ''
+                placeholder: 'new tag',
+                removeTagSymbol: 'x'
               })
               .setDefaults('autoComplete', {
                 highlightMatchedText: true

@@ -1,47 +1,42 @@
 'use strict';
 
 describe('autosize directive', function() {
-    var $scope, $compile,
-        element, style, container;
+    var $scope, $document, $compile,
+        element;
+
+    // The style tag should be created once, so we can't do it within a beforeEach() callback
+    $('<style> .tag-input { box-sizing: border-box; border: 1px; padding: 2px; font: Arial 18px; }</style>').appendTo('head');
 
     beforeEach(function() {
         module('ngTagsInput');
 
-        inject(function($rootScope, _$compile_) {
+        inject(function($rootScope, _$document_, _$compile_) {
             $scope = $rootScope;
+            $document = _$document_;
             $compile = _$compile_;
         });
-
-        style = angular.element('<style> .input { box-sizing: border-box; border: 1px; padding: 2px; font: Arial 18px; }</style>').appendTo('head');
-        container = angular.element('<div></div>').appendTo('body');
-    });
-
-    afterEach(function() {
-        style.remove();
-        container.remove();
     });
 
     function compile() {
         var attributes = $.makeArray(arguments).join(' ');
 
-        element = angular.element('<input class="input" ng-model="model" ng-trim="false" ti-autosize ' + attributes + '>');
-        container.append(element);
+        element = angular.element('<input class="tag-input" ng-model="model" ti-autosize ' + attributes + '>');
+        $document.find('body').append(element);
 
         $compile(element)($scope);
         $scope.$digest();
     }
 
     function getTextWidth(text) {
-        var width, span = angular.element('<span class="input"></span>');
+        var width, span = angular.element('<span class="tag-input"></span>');
 
-        span.css('white-space', 'pre');
         span.text(text);
-        container.append(span);
-        width = parseInt(span.prop('offsetWidth'), 10) + 3;
+        $document.find('body').append(span);
+        width = span.prop('offsetWidth') + 'px';
 
         span.remove();
 
-        return width + 'px';
+        return width;
     }
 
     it('re-sizes the input width when its view content changes', function() {
@@ -72,8 +67,7 @@ describe('autosize directive', function() {
 
     it('sets the input width as the placeholder width when the input is empty', function() {
         // Arrange
-        $scope.placeholder = 'Some placeholder';
-        compile('placeholder="{{placeholder}}"');
+        compile('placeholder="Some placeholder"');
 
         // Act
         $scope.model = '';
@@ -81,18 +75,5 @@ describe('autosize directive', function() {
 
         // Assert
         expect(element.css('width')).toBe(getTextWidth('Some placeholder'));
-    });
-
-    it('clears the input width when it cannot be calculated', function() {
-        // Arrange
-        container.hide();
-        compile();
-
-        // Act
-        element.val('AAAAAAAAAAAAAA');
-        element.trigger('input');
-
-        // Assert
-        expect(element.prop('style').width).toBe('');
     });
 });

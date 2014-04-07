@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdoc directive
+ * @ngDoc directive
  * @name tagsInput.directive:tiAutosize
  *
  * @description
@@ -12,32 +12,29 @@ tagsInput.directive('tiAutosize', function() {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
-            var THRESHOLD = 3,
-                span, resize;
+            var span, resize;
 
-            span = angular.element('<span class="input"></span>');
+            span = angular.element('<span class="tag-input"></span>');
             span.css('display', 'none')
                 .css('visibility', 'hidden')
-                .css('width', 'auto')
-                .css('white-space', 'pre');
+                .css('width', 'auto');
 
             element.parent().append(span);
 
-            resize = function(originalValue) {
-                var value = originalValue, width;
+            resize = function(value) {
+                var originalValue = value;
 
                 if (angular.isString(value) && value.length === 0) {
-                    value = attrs.placeholder;
+                    value = element.attr('placeholder');
                 }
-
-                if (value) {
-                    span.text(value);
-                    span.css('display', '');
-                    width = span.prop('offsetWidth');
+                span.text(value);
+                span.css('display', '');
+                try {
+                    element.css('width', span.prop('offsetWidth') + 'px');
+                }
+                finally {
                     span.css('display', 'none');
                 }
-
-                element.css('width', width ? width + THRESHOLD + 'px' : '');
 
                 return originalValue;
             };

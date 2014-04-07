@@ -18,6 +18,7 @@ describe('configuration service', function() {
         $scope.options = {};
     });
 
+       
     it('loads literal values from attributes', function() {
         // Arrange
         attrs.prop1 = 'foobar';

@@ -54,4 +54,5 @@ describe('transclude-append-directive', function () {
         var content = $.map(element.find('p'), function(e) { return $(e).html(); });
         expect(content).toEqual(['existing content', 'transcluded content']);
     });
+    
 });

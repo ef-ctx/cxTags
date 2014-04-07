@@ -1,3 +1,4 @@
+/*globals console: true*/
 'use strict';
 
 /**
@@ -18,14 +19,23 @@
  *                                               suggestions list.
  * @param {number=} [maxResultsToShow=10] Maximum number of results to be displayed at a time.
  */
+
+
 tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInputConfig) {
-    function SuggestionList(loadFn, options) {
+    function SuggestionList(loadFn,categories, options) {
         var self = {}, debouncedLoadId, getDifference, lastPromise;
 
         getDifference = function(array1, array2) {
-            return array1.filter(function(item) {
-                return !findInObjectArray(array2, item, options.tagsInput.displayProperty);
+            var result = [],
+                b = array2.map(function (a) { return a.label; });
+            
+            array1.forEach(function(item) {
+                if (b.indexOf(item.label) === -1) {
+                    result.push(item);
+                }
             });
+
+            return result;
         };
 
         self.reset = function() {
@@ -39,21 +49,29 @@ tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInpu
 
             $timeout.cancel(debouncedLoadId);
         };
+
         self.show = function() {
             self.selected = null;
             self.visible = true;
         };
+
         self.load = function(query, tags) {
+            
             if (query.length < options.minLength) {
                 self.reset();
                 return;
             }
 
+            self.query =  query;
+            
             $timeout.cancel(debouncedLoadId);
             debouncedLoadId = $timeout(function() {
-                self.query = query;
+                var params= {
+                        keywords: query,
+                        categories: categories
+                    },
+                    promise = loadFn({$query: params});
 
-                var promise = loadFn({ $query: query });
                 lastPromise = promise;
 
                 promise.then(function(items) {
@@ -61,8 +79,7 @@ tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInpu
                         return;
                     }
 
-                    items = makeObjectArray(items.data || items, options.tagsInput.displayProperty);
-                    self.items = getDifference(items, tags);
+                    self.items = getDifference(items.data || items, tags);
                     if (self.items.length > 0) {
                         self.show();
                     }
@@ -100,14 +117,18 @@ tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInpu
                     .replace(/>/g, '&gt;');
     }
 
+
     return {
-        restrict: 'E',
+        restrict: 'AE',
         require: '^tagsInput',
-        scope: { source: '&' },
+        scope: {
+            source: '&',
+            categories: '='
+        },
         templateUrl: 'ngTagsInput/auto-complete.html',
         link: function(scope, element, attrs, tagsInputCtrl) {
             var hotkeys = [KEYS.enter, KEYS.tab, KEYS.escape, KEYS.up, KEYS.down],
-                suggestionList, tagsInput, options, getItemText, markdown;
+                suggestionList, tagsInput, markdown;
 
             tagsInputConfig.load('autoComplete', scope, attrs, {
                 debounceDelay: [Number, 100],
@@ -116,18 +137,10 @@ tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInpu
                 maxResultsToShow: [Number, 10]
             });
 
-            options = scope.options;
-
             tagsInput = tagsInputCtrl.registerAutocomplete();
-            options.tagsInput = tagsInput.getOptions();
+            suggestionList = new SuggestionList(scope.source, scope.categories, scope.options);
 
-            suggestionList = new SuggestionList(scope.source, options);
-
-            getItemText = function(item) {
-                return item[options.tagsInput.displayProperty];
-            };
-
-            if (options.highlightMatchedText) {
+            if (scope.options.highlightMatchedText) {
                 markdown = function(item, text) {
                     var expression = new RegExp(text, 'gi');
                     return item.replace(expression, '**$&**');
@@ -145,7 +158,7 @@ tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInpu
                 var added = false;
 
                 if (suggestionList.selected) {
-                    tagsInput.addTag(suggestionList.selected);
+                    tagsInput.tryAddTag(suggestionList.selected);
                     suggestionList.reset();
                     tagsInput.focusInput();
 
@@ -155,21 +168,13 @@ tagsInput.directive('autoComplete', function($document, $timeout, $sce, tagsInpu
             };
 
             scope.highlight = function(item) {
-                var text = getItemText(item);
-                text = markdown(text, suggestionList.query);
-                text = encodeHTML(text);
-                text = text.replace(/\*\*(.+?)\*\*/g, '<em>$1</em>');
-                return $sce.trustAsHtml(text);
-            };
-
-            scope.track = function(item) {
-                return getItemText(item);
+                item = markdown(item, suggestionList.query);
+                item = encodeHTML(item);
+                item = item.replace(/\*\*(.+?)\*\*/g, '<em>$1</em>');
+                return $sce.trustAsHtml(item);
             };
 
             tagsInput
-                .on('tag-added duplicate-tag', function() {
-                    suggestionList.reset();
-                })
                 .on('input-change', function(value) {
                     if (value) {
                         suggestionList.load(value, tagsInput.getTags());
