@@ -1,0 +1,8 @@
+<span class="cx-tag-list">
+    <ul class="tag-list">
+        <li class="tag-item" ng-repeat="tag in tags">
+            <span>{{tag.label}}</span>
+            <button type="button" data-ng-show="removeEnabled" ng-click="remove($index)">×</button>
+        </li>
+    </ul>
+</span>

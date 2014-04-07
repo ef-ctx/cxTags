@@ -1,6 +1,7 @@
+/*jshint -W087 */
 'use strict';
 
-describe('tags-input directive', function() {
+describe('tags-input-directive', function() {
     var $compile, $scope, $timeout, $document,
         isolateScope, element;
 
@@ -17,7 +18,7 @@ describe('tags-input directive', function() {
 
     function compile() {
         var options = jQuery.makeArray(arguments).join(' ');
-        var template = '<tags-input ng-model="tags" ' + options + '></tags-input>';
+        var template = '<span data-tags-input ng-model="tags" ' + options + '></span>';
 
         element = $compile(template)($scope);
         $scope.$digest();
@@ -26,17 +27,11 @@ describe('tags-input directive', function() {
 
     function compileWithForm() {
         var options = jQuery.makeArray(arguments).join(' ');
-        var template = '<form name="form"><tags-input ng-model="tags" ' + options + '></tags-input></form>';
+        var template = '<form name="form"><span data-tags-input ng-model="tags" ' + options + '></span></form>';
 
         element = $compile(template)($scope);
         $scope.$digest();
         isolateScope = element.isolateScope();
-    }
-
-    function generateTags(count) {
-        return generateArray(count, function(index) {
-            return { text: 'Tag' + index };
-        });
     }
 
     function getTags() {
@@ -95,42 +90,21 @@ describe('tags-input directive', function() {
     describe('basic features', function() {
         it('renders the correct number of tags', function() {
             // Arrange
-            $scope.tags = [
-                { text: 'Tag1 '},
-                { text: ' Tag2'},
-                { text: ' Tag3 '}
-            ];
+            $scope.tags = [{id:0, label:'some'},{id:1, label:'cool'},{id:2, label:'tags'}];
 
             // Act
             compile();
 
             // Assert
             expect(getTags().length).toBe(3);
-            expect(getTagText(0)).toBe('Tag1');
-            expect(getTagText(1)).toBe('Tag2');
-            expect(getTagText(2)).toBe('Tag3');
-        });
-
-        it('updates the model', function() {
-            // Arrange
-            compile();
-
-            // Act
-            newTag('Tag1 ');
-            newTag(' Tag2');
-            newTag(' Tag3 ');
-
-            // Assert
-            expect($scope.tags).toEqual([
-                { text: 'Tag1' },
-                { text: 'Tag2' },
-                { text: 'Tag3' }
-            ]);
+            expect(getTagText(0)).toBe('some');
+            expect(getTagText(1)).toBe('cool');
+            expect(getTagText(2)).toBe('tags');
         });
 
         it('removes a tag when the remove button is clicked', function() {
             // Arrange
-            $scope.tags = generateTags(3);
+            $scope.tags = ['some','cool','tags'];
             compile();
 
             // Act
@@ -153,54 +127,12 @@ describe('tags-input directive', function() {
             expect(input.focus).toHaveBeenCalled();
         });
 
-        it('does not allow duplicate tags', function() {
+        it('adds a custom CSS class to the container div when custom-class option is provided', function() {
+            // Arrange/Act
+            compile('custom-class="myClass"');
+
             // Arrange
-            compile();
-
-            // Act
-            newTag('foo');
-            newTag('Foo');
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo' }]);
-        });
-
-        it('clears the input field when a duplicate tag is tried to be added', function() {
-            // Arrange
-            compile();
-
-            // Act
-            newTag('foo');
-            newTag('Foo');
-
-            // Assert
-            expect(getInput().val()).toBe('');
-        });
-
-        it('empties the input field after a tag is added directly', function() {
-            // Arrange
-            compile();
-
-            // Act
-            newTag('foo');
-
-            // Assert
-            expect(getInput().val()).toBe('');
-        });
-
-        it('converts an array of strings into an array of objects', function() {
-            // Arrange
-            $scope.tags = ['Item1', 'Item2', 'Item3'];
-
-            // Act
-            compile();
-
-            // Assert
-            expect($scope.tags).toEqual([
-                { text: 'Item1' },
-                { text: 'Item2' },
-                { text: 'Item3' }
-            ]);
+            expect(element.find('div').hasClass('myClass')).toBe(true);
         });
     });
 
@@ -285,171 +217,6 @@ describe('tags-input directive', function() {
         });
     });
 
-    describe('add-on-enter option', function() {
-        it('adds a new tag when the enter key is pressed and the option is true', function() {
-            // Arrange
-            compile('add-on-enter="true"');
-
-            // Act
-            newTag('foo', KEYS.enter);
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo' }]);
-        });
-
-        it('does not add a new tag when the enter key is pressed and the option is false', function() {
-            // Arrange
-            compile('add-on-enter="false"');
-
-            // Act
-            newTag('foo', KEYS.enter);
-
-            // Assert
-            expect($scope.tags).toEqual([]);
-        });
-
-        it('initializes the option to true', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.addOnEnter).toBe(true);
-        });
-    });
-
-    describe('add-on-space option', function() {
-        it('adds a new tag when the space key is pressed and the option is true', function() {
-            // Arrange
-            compile('add-on-space="true"');
-
-            // Act
-            newTag('foo', KEYS.space);
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo' }]);
-        });
-
-        it('does not add a new tag when the space key is pressed and the option is false', function() {
-            // Arrange
-            compile('add-on-space="false"');
-
-            // Act
-            newTag('foo', KEYS.space);
-
-            // Assert
-            expect($scope.tags).toEqual([]);
-        });
-
-        it('initializes the option to false', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.addOnSpace).toBe(false);
-        });
-    });
-
-    describe('add-on-comma option', function() {
-        it('adds a new tag when the comma key is pressed and the option is true', function() {
-            // Arrange
-            compile('add-on-comma="true"');
-
-            // Act
-            newTag('foo', KEYS.comma);
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo' }]);
-        });
-
-        it('does not add a new tag when the space key is pressed and the option is false', function() {
-            // Arrange
-            compile('add-on-comma="false"');
-
-            // Act
-            newTag('foo', KEYS.comma);
-
-            // Assert
-            expect($scope.tags).toEqual([]);
-        });
-
-        it('initializes the option to true', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.addOnComma).toBe(true);
-        });
-    });
-
-    describe('add-on-blur option', function() {
-        it('initializes the option to true', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.addOnBlur).toBe(true);
-        });
-
-        it('ensures the outermost div element has a tabindex attribute set to -1', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(element.find('div').attr('tabindex')).toBe('-1');
-        });
-
-        describe('option is true', function() {
-            var body;
-
-            beforeEach(function() {
-                compile('add-on-blur="true"');
-
-                body = $document.find('body');
-                body.append(element);
-            });
-
-            it('adds a tag when the input field loses focus to any element on the page but the directive itself', function() {
-                // Arrange
-                isolateScope.newTag = 'foo';
-                body.focus();
-
-                // Act
-                getInput().triggerHandler('blur');
-                $timeout.flush();
-
-                // Assert
-                expect($scope.tags).toEqual([{ text: 'foo' }]);
-            });
-
-            it('does not add a tag when the input field loses focus to the directive itself', function() {
-                // Arrange
-                isolateScope.newTag = 'foo';
-                element.find('div').focus();
-
-                // Act
-                getInput().triggerHandler('blur');
-                $timeout.flush();
-
-                // Assert
-                expect($scope.tags).toEqual([]);
-            });
-        });
-
-        describe('option is off', function() {
-            it('does not add a new tag when the input field loses focus', function() {
-                // Arrange
-                compile('add-on-blur="false"');
-                isolateScope.newTag = 'foo';
-
-                // Act
-                getInput().triggerHandler('blur');
-
-                // Assert
-                expect($scope.tags).toEqual([]);
-            });
-        });
-    });
-
     describe('placeholder option', function() {
         it('sets the input field placeholder text', function() {
             // Arrange/Act
@@ -471,7 +238,7 @@ describe('tags-input directive', function() {
     describe('remove-tag-symbol option', function() {
         it('sets the remove button text', function() {
             // Arrange/Act
-            $scope.tags = generateTags(1);
+            $scope.tags = ['foo'];
 
             // Act
             compile('remove-tag-symbol="X"');
@@ -489,90 +256,6 @@ describe('tags-input directive', function() {
         });
     });
 
-    describe('replace-spaces-with-dashes option', function() {
-        it('replaces spaces with dashes when replaces-spaces-with-dashes option is true', function() {
-            // Arrange
-            compile('replace-spaces-with-dashes="true"');
-
-            // Act
-            newTag('foo bar');
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo-bar' }]);
-        });
-
-        it('does not replace spaces with dashes when replaces-spaces-with-dashes option is true', function() {
-            // Arrange
-            compile('replace-spaces-with-dashes="false"');
-
-            // Act
-            newTag('foo bar');
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo bar' }]);
-        });
-
-        it('initializes the option to true', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.replaceSpacesWithDashes).toBe(true);
-        });
-    });
-
-    describe('allowed-tags-pattern option', function() {
-        it('allows only tags matching a regular expression to be added', function() {
-            // Arrange
-            compile('allowed-tags-pattern="^[a-z]+@[a-z]+\\.com$"');
-
-            // Act
-            newTag('foo@bar.com');
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'foo@bar.com' }]);
-        });
-
-        it('rejects tags that do not match the regular expression', function() {
-            // Arrange
-            compile('allowed-tags-pattern="^[a-z]+@[a-z]+\\.com$"');
-
-            // Act
-            newTag('foobar.com');
-
-            // Assert
-            expect($scope.tags).toEqual([]);
-        });
-
-        it('initializes the option to .+', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.allowedTagsPattern.toString()).toBe('/.+/');
-        });
-    });
-
-    describe('min-length option', function() {
-        it('adds a new tag only if its length is greater than or equal to min-length option', function() {
-            // Arrange
-            compile('min-length="5"');
-
-            // Act
-            newTag('foo');
-
-            // Assert
-            expect($scope.tags).toEqual([]);
-        });
-
-        it('initializes the option to 3', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.minLength).toBe(3);
-        });
-    });
 
     describe('max-length option', function() {
         it('sets the maxlength attribute of the input field to max-length option', function() {
@@ -594,7 +277,7 @@ describe('tags-input directive', function() {
 
     describe('enable-editing-last-tag option', function() {
         beforeEach(function() {
-            $scope.tags = generateTags(3);
+            $scope.tags = ['some','cool','tags'];
         });
 
         it('initializes the option to false', function() {
@@ -616,8 +299,8 @@ describe('tags-input directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect(getInput().val()).toBe('Tag3');
-                    expect($scope.tags).toEqual([{ text: 'Tag1' }, { text: 'Tag2' }]);
+                    expect(getInput().val()).toBe('tags');
+                    expect($scope.tags).toEqual(['some','cool']);
                 });
 
                 it('does nothing when the input field is not empty', function() {
@@ -626,7 +309,7 @@ describe('tags-input directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect($scope.tags).toEqual([{ text: 'Tag1' }, { text: 'Tag2' }, { text: 'Tag3' }]);
+                    expect($scope.tags).toEqual(['some','cool','tags']);
                 });
             });
         });
@@ -651,7 +334,7 @@ describe('tags-input directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect($scope.tags).toEqual([{ text: 'Tag1' }, { text: 'Tag2' }, { text: 'Tag3' }]);
+                    expect($scope.tags).toEqual(['some','cool','tags']);
                 });
 
                 it('stops highlighting the last tag when the input box becomes non-empty', function() {
@@ -672,7 +355,7 @@ describe('tags-input directive', function() {
 
                     // Assert
                     expect(getInput().val()).toBe('');
-                    expect($scope.tags).toEqual([{ text: 'Tag1' }, { text: 'Tag2' }]);
+                    expect($scope.tags).toEqual(['some','cool']);
                 });
 
                 it('does nothing when the input field is not empty', function() {
@@ -682,7 +365,7 @@ describe('tags-input directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect($scope.tags).toEqual([{ text: 'Tag1' }, { text: 'Tag2' }, { text: 'Tag3' }]);
+                    expect($scope.tags).toEqual(['some','cool','tags']);
                 });
             });
         });
@@ -702,7 +385,7 @@ describe('tags-input directive', function() {
             compileWithForm('min-tags="3"', 'name="tags"');
 
             // Act
-            $scope.tags = generateTags(2);
+            $scope.tags = ['Tag1', 'Tag2'];
             $scope.$digest();
 
             // Assert
@@ -715,7 +398,7 @@ describe('tags-input directive', function() {
             compileWithForm('min-tags="2"', 'name="tags"');
 
             // Act
-            $scope.tags = generateTags(2);
+            $scope.tags = ['Tag1', 'Tag2'];
             $scope.$digest();
 
             // Assert
@@ -728,7 +411,7 @@ describe('tags-input directive', function() {
             compileWithForm('name="tags"');
 
             // Act
-            $scope.tags = generateTags(5);
+            $scope.tags = ['Tag1', 'Tag2', 'Tags3', 'Tags4', 'Tags5'];
             $scope.$digest();
 
             // Assert
@@ -752,7 +435,7 @@ describe('tags-input directive', function() {
             compileWithForm('max-tags="2"', 'name="tags"');
 
             // Act
-            $scope.tags = generateTags(3);
+            $scope.tags = ['Tag1', 'Tag2', 'Tag3'];
             $scope.$digest();
 
             // Assert
@@ -765,7 +448,7 @@ describe('tags-input directive', function() {
             compileWithForm('max-tags="2"', 'name="tags"');
 
             // Act
-            $scope.tags = generateTags(2);
+            $scope.tags = ['Tag1', 'Tag2'];
             $scope.$digest();
 
             // Assert
@@ -778,7 +461,7 @@ describe('tags-input directive', function() {
             compileWithForm('name="tags"');
 
             // Act
-            $scope.tags = generateTags(5);
+            $scope.tags = ['Tag1', 'Tag2', 'Tags3', 'Tags4', 'Tags5'];
             $scope.$digest();
 
             // Assert
@@ -787,85 +470,10 @@ describe('tags-input directive', function() {
         });
     });
 
-    describe('display-property option', function() {
-        it('initializes the option to "text"', function() {
-            // Arrange/Act
-            compile();
-
-            // Assert
-            expect(isolateScope.options.displayProperty).toBe('text');
-        });
-
-        it('renders the correct number of tags', function() {
-            // Arrange
-            $scope.tags = [
-                { id: 1, label: 'Tag1' },
-                { id: 2, label: 'Tag2' },
-                { id: 3, label: 'Tag3' },
-            ];
-
-            // Act
-            compile('display-property="label"');
-
-            // Assert
-            expect(getTags().length).toBe(3);
-            expect(getTagText(0)).toBe('Tag1');
-            expect(getTagText(1)).toBe('Tag2');
-            expect(getTagText(2)).toBe('Tag3');
-        });
-
-        it('updates the model', function() {
-            // Arrange
-            compile('display-property="label"');
-
-            // Act
-            newTag('Tag1');
-            newTag('Tag2');
-            newTag('Tag3');
-
-            // Assert
-            expect($scope.tags).toEqual([
-                { label: 'Tag1' },
-                { label: 'Tag2' },
-                { label: 'Tag3' }
-            ]);
-        });
-
-        it('converts an array of strings into an array of objects', function() {
-            // Arrange
-            $scope.tags = ['Item1', 'Item2', 'Item3'];
-
-            // Act
-            compile('display-property="label"');
-
-            // Assert
-            expect($scope.tags).toEqual([
-                { label: 'Item1' },
-                { label: 'Item2' },
-                { label: 'Item3' }
-            ]);
-        });
-
-    });
-
-    describe('on-tag-added option', function() {
-        it('calls the provided callback when a new tag is added', function() {
-            // Arrange
-            $scope.callback = jasmine.createSpy();
-            compile('on-tag-added="callback($tag)"');
-
-            // Act
-            newTag('foo');
-
-            // Assert
-            expect($scope.callback).toHaveBeenCalledWith({ text: 'foo' });
-        });
-    });
-
     describe('on-tag-removed option', function () {
         it('calls the provided callback when a tag is removed by clicking the remove button', function() {
             // Arrange
-            $scope.tags = generateTags(3);
+            $scope.tags = ['some','cool','tags'];
             $scope.callback = jasmine.createSpy();
             compile('on-tag-removed="callback($tag)"');
 
@@ -873,12 +481,12 @@ describe('tags-input directive', function() {
             element.find('button')[0].click();
 
             // Assert
-            expect($scope.callback).toHaveBeenCalledWith({ text: 'Tag1' });
+            expect($scope.callback).toHaveBeenCalledWith('some');
         });
 
         it('calls the provided callback when the last tag is removed by pressing backspace twice', function() {
             // Arrange
-            $scope.tags = generateTags(2);
+            $scope.tags = ['some','cool','tags'];
             $scope.callback = jasmine.createSpy();
             compile('on-tag-removed="callback($tag)"');
 
@@ -887,7 +495,7 @@ describe('tags-input directive', function() {
             sendBackspace();
 
             // Assert
-            expect($scope.callback).toHaveBeenCalledWith({ text: 'Tag2' });
+            expect($scope.callback).toHaveBeenCalledWith('tags');
         });
     });
 
@@ -901,36 +509,11 @@ describe('tags-input directive', function() {
 
         it('creates an object containing all the autocomplete directive needs to work', function() {
             expect(autocompleteObj).toEqual({
-                addTag: jasmine.any(Function),
+                tryAddTag: jasmine.any(Function),
                 focusInput: jasmine.any(Function),
                 on: jasmine.any(Function),
-                getTags: jasmine.any(Function),
-                getOptions: jasmine.any(Function)
+                getTags: jasmine.any(Function)
             });
-        });
-
-        it('tries to add a tag', function() {
-            // Arrange
-            $scope.tags = [];
-            $scope.$digest();
-
-            // Act
-            autocompleteObj.addTag({ text: ' Tag ' });
-
-            // Assert
-            expect($scope.tags).toEqual([{ text: 'Tag' }]);
-        });
-
-        it('empties the input field after a tag is added', function() {
-            // Arrange
-            getInput().val('Tag').trigger('input');
-
-            // Act
-            autocompleteObj.addTag({ text: 'Tag' });
-            $scope.$digest();
-
-            // Assert
-            expect(getInput().val()).toBe('');
         });
 
         it('focus the input box', function() {
@@ -947,19 +530,11 @@ describe('tags-input directive', function() {
 
         it('returns the list of tags', function() {
             // Arrange
-            $scope.tags = generateTags(2);
+            $scope.tags = ['a', 'b', 'c'];
             $scope.$digest();
 
             // Act/Assert
-            expect(autocompleteObj.getTags()).toEqual([{ text: 'Tag1' }, { text: 'Tag2' }]);
-        });
-
-        it('returns the option list', function() {
-            // Arrange
-            isolateScope.options = { option1: 1, option2: 2, option3: true };
-
-            // Act/Assert
-            expect(autocompleteObj.getOptions()).toEqual({ option1: 1, option2: 2, option3: true });
+            expect(autocompleteObj.getTags()).toEqual(['a', 'b', 'c']);
         });
 
         describe('events', function() {
@@ -1004,6 +579,7 @@ describe('tags-input directive', function() {
             });
         });
     });
+
 
     describe('hotkeys propagation handling', function() {
         var hotkeys;
