@@ -184,5 +184,6 @@
     color: #aaa;
 }
 .highlighted {
-    color: #090;
+    display:inline-block;
+    background-color: #d0ead7;
 }

@@ -28,7 +28,7 @@ tagsInput.directive('autoComplete', [
     'tagsInputConfig',
     function($document, $timeout, $sce, tagsInputConfig) {
 
-        function SuggestionList(loadFn, categories, options) {
+        function SuggestionList(loadFn, families, options) {
             var self = {}, debouncedLoadId, getDifference, lastPromise;
 
             getDifference = function(array1, array2) {
@@ -76,7 +76,7 @@ tagsInput.directive('autoComplete', [
                 debouncedLoadId = $timeout(function() {
                     var params = {
                         keywords: query,
-                        categories: categories
+                        families: families
                     },
                         promise = loadFn({
                             $query: params
@@ -124,7 +124,7 @@ tagsInput.directive('autoComplete', [
             require: '^tagsInput',
             scope: {
                 source: '&',
-                categories: '='
+                families: '='
             },
             templateUrl: 'ngTagsInput/auto-complete.html',
             link: function(scope, element, attrs, tagsInputCtrl) {
@@ -139,7 +139,7 @@ tagsInput.directive('autoComplete', [
                 });
 
                 tagsInput = tagsInputCtrl.registerAutocomplete();
-                suggestionList = new SuggestionList(scope.source, scope.categories, scope.options);
+                suggestionList = new SuggestionList(scope.source, scope.families, scope.options);
 
                 scope.suggestionList = suggestionList;
 

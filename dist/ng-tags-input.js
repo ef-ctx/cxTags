@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-09 11:05:38 +0100
+ * Generated at 2014-04-09 17:01:26 +0100
  */
 (function() {
 'use strict';
@@ -388,7 +388,7 @@ tagsInput.directive('autoComplete', [
     'tagsInputConfig',
     function($document, $timeout, $sce, tagsInputConfig) {
 
-        function SuggestionList(loadFn, categories, options) {
+        function SuggestionList(loadFn, families, options) {
             var self = {}, debouncedLoadId, getDifference, lastPromise;
 
             getDifference = function(array1, array2) {
@@ -436,7 +436,7 @@ tagsInput.directive('autoComplete', [
                 debouncedLoadId = $timeout(function() {
                     var params = {
                         keywords: query,
-                        categories: categories
+                        families: families
                     },
                         promise = loadFn({
                             $query: params
@@ -484,7 +484,7 @@ tagsInput.directive('autoComplete', [
             require: '^tagsInput',
             scope: {
                 source: '&',
-                categories: '='
+                families: '='
             },
             templateUrl: 'ngTagsInput/auto-complete.html',
             link: function(scope, element, attrs, tagsInputCtrl) {
@@ -499,7 +499,7 @@ tagsInput.directive('autoComplete', [
                 });
 
                 tagsInput = tagsInputCtrl.registerAutocomplete();
-                suggestionList = new SuggestionList(scope.source, scope.categories, scope.options);
+                suggestionList = new SuggestionList(scope.source, scope.families, scope.options);
 
                 scope.suggestionList = suggestionList;
 
