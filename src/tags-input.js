@@ -1,3 +1,4 @@
+/*globals console: true*/
 'use strict';
 
 /**
@@ -37,7 +38,7 @@ tagsInput.directive('tagsInput', [
     'EVENT',
 
     function($document, $rootScope, $timeout, tagsInputConfig, EVENT) {
-        function SimplePubSub(messagingNamespace, initialValue) {
+        function SimplePubSub(messagingNamespace) {
             var events = {};
 
             return {
@@ -85,10 +86,10 @@ tagsInput.directive('tagsInput', [
                     minLength: [Number, 3],
                     maxLength: [Number],
                     addOnEnter: [Boolean, true],
-                    addOnSpace: [Boolean, true],
+                    addOnSpace: [Boolean, false],
                     addOnComma: [Boolean, true],
                     addOnBlur: [Boolean, true],
-                    allowedTagsPattern: [RegExp, /^[\-\_a-zA-Z0-9\s]+$/],
+                    allowedTagsPattern: [RegExp, /^[\-\_\sa-zA-Z0-9]+$/],
                     enableEditingLastTag: [Boolean, false],
                     minTags: [Number],
                     maxTags: [Number]
@@ -96,9 +97,8 @@ tagsInput.directive('tagsInput', [
 
                 $scope.newTag = '';
                 $scope.tags = $scope.tags || [];
-
-                $scope.events = new SimplePubSub($scope.messagingNamespace, $scope.tags);
-
+                
+                $scope.events = new SimplePubSub($scope.messagingNamespace);
                 $scope.events.on(EVENT.tagAdded, $scope.onTagAdded);
                 $scope.events.on(EVENT.tagRemoved, $scope.onTagRemoved);
 
@@ -180,6 +180,10 @@ tagsInput.directive('tagsInput', [
                 }, function() {
                     shouldRemoveLastTag = false;
                 });
+                
+                this.getInputValue = function () {
+                    return $scope.newTag;
+                };
 
                 this.registerAutocomplete = function() {
                     var input = $element.find('input');

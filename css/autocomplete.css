@@ -75,3 +75,6 @@
 .ngTagsInput .autocomplete .suggestion-item .tag-attribute-value {
     color: #aaa;
 }
+.highlighted {
+    color: #090;
+}

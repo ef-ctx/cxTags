@@ -4,16 +4,17 @@
         ng-repeat="item in suggestionList.items | limitTo:options.maxResultsToShow"
         ng-class="{selected: item == suggestionList.selected}"
         ng-click="addSuggestion()"
-        ng-mouseenter="suggestionList.select($index)" > 
+        ng-mouseenter="suggestionList.select($index)" 
+        > 
             <ul>
-                <li class="tag-label"> {{ item.label }} </li>
+                <li class="tag-label" data-ng-tag-highlight="{{ item.label }}"></li>
                 <li ng-repeat="(key, value) in item.attributes" class="tag-attribute">
-                    <span class="tag-attribute-key">{{ key }}</span>
-                    <span class="tag-attribute-value">{{ value }}</span>
+                    <span class="tag-attribute-key" >{{ key }}</span>
+                    <span class="tag-attribute-value" data-ng-tag-highlight="{{ value }}"></span>
                 </li>
                 <li class="tag-description">
                     <span class="tag-attribute-key"> Description </span>
-                    <span class="tag-attribute-value"> {{ item.description }} </span>  
+                    <span class="tag-attribute-value" data-ng-tag-highlight="{{ item.description }}"></span>  
                 </li>
             </ul>
         </li>

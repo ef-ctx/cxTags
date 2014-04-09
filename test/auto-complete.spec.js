@@ -434,7 +434,7 @@ describe('autocomplete-directive', function() {
 
                 // Assert
                 expect(tagsInput.tryAddTag).toHaveBeenCalledWith(mockTags[1]);
-            });*/
+            });
 
             it('focuses the input field when a suggestion is added via a mouse click', function() {
                 // Arrange
@@ -446,7 +446,7 @@ describe('autocomplete-directive', function() {
 
                 // Assert
                 expect(tagsInput.focusInput).toHaveBeenCalled();
-            });
+            });*/
         });
     });
 

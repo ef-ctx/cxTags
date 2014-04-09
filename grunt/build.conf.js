@@ -13,6 +13,7 @@ module.exports = {
                 'src/auto-complete.js',
                 'src/transclude-append.js',
                 'src/autosize.js',
+                'src/highlight.js',
                 'src/configuration.js'
             ],
             out: 'build/<%= pkg.name %>.js',
