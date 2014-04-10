@@ -1,7 +1,7 @@
 /*globals console:true*/
 'use strict';
 
-tagsInput.directive('tagsInputExternalOutput', [
+tagsInput.directive('cxTagList', [
     '$rootScope',
     '$timeout',
     'EVENT',
@@ -9,11 +9,11 @@ tagsInput.directive('tagsInputExternalOutput', [
         
         var linkFn = function($scope, element, attrs) {
                 var tagsChangedHandler = function (event, target) {
-                    $scope.tags = target.$tags;
+                    $scope.tagList = target.$tags;
                 };
                 
-                if ($scope.tagList) {
-                    $scope.tags = $scope.tagList;
+                if ($scope.tags) {
+                    $scope.tagList = $scope.tags;
                 }
 
                 if ($scope.messagingNamespace && ($scope.messagingNamespace.length > 0)) {
@@ -34,7 +34,7 @@ tagsInput.directive('tagsInputExternalOutput', [
             scope: {
                 messagingNamespace: '@',
                 removeEnabled: '=',
-                tagList: '='
+                tags: '='
             },
             replace: true,
             templateUrl: 'ngTagsInput/tag-list.html',
