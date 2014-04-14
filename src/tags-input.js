@@ -108,6 +108,7 @@ tagsInput.directive('tagsInput', [
 
                     if ((tag) &&
                         (tag.label) &&
+                        (angular.isString(tag.label)) &&
                         (tag.label.length >= $scope.options.minLength) &&
                         ($scope.options.allowedTagsPattern.test(tag.label))
                     ) {

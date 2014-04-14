@@ -1,6 +1,6 @@
 <div class="ngTagsInput ctx-tags" tabindex="-1" ng-class="options.customClass" ti-transclude-append>
   <div class="tags" ng-class="{focused: hasFocus}">
-    <ul class="tag-list" ng-show="!hideTags">
+    <ul class="tag-list" ng-if="!hideTags">
       <li class="tag-item" ng-repeat="tag in tags" ng-class="getCssClass($index)">
         <span>{{tag.label}}</span>
         <button type="button" ng-click="remove($index)">{{options.removeTagSymbol}}</button>
