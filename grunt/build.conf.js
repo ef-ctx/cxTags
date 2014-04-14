@@ -21,6 +21,7 @@ module.exports = {
         },
         css: {
             src: ['css/tags-input.css', 'css/autocomplete.css'],
+            dev: ['css/developing-mark.css'],
             out: 'build/<%= pkg.name %>.css',
             outMin: 'build/<%= pkg.name %>.min.css'
         },

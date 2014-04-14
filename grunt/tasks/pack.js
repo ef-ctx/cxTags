@@ -5,12 +5,22 @@ module.exports = function(grunt) {
         'test',
         'clean',
         'ngtemplates',
-        'concat',
+        'concat:js',
+        'concat:css',
         'ngAnnotate',
         'uglify',
         'cssmin',
         'compress',
         'clean:tmp'
+    ]);
+
+
+    grunt.registerTask('dev',[
+        'test',
+        'clean',
+        'ngtemplates',
+        'concat',
+        'copy:dist'
     ]);
 
 };

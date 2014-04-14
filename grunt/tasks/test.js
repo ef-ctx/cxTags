@@ -1,6 +1,6 @@
 module.exports = function (grunt) {
     'use strict';
 
-    grunt.registerTask('test', ['jshint','karma']);
+    grunt.registerTask('test', ['jshint','karma:continuous']);
      
 };

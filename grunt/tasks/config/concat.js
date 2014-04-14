@@ -23,6 +23,12 @@ module.exports = {
         files: {
             '<%= files.css.out %>': ['<%= files.css.src %>']
         }
+    },
+
+    dev: {
+        files:{
+            '<%= files.css.out %>': ['<%= files.css.dev %>']
+        }
     }
 
 };
