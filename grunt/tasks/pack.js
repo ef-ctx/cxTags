@@ -20,6 +20,10 @@ module.exports = function(grunt) {
         'clean',
         'ngtemplates',
         'concat',
+        'uglify',
+        'cssmin',
+        'compress',
+        'clean:tmp',
         'copy:dist'
     ]);
 

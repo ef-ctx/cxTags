@@ -1,0 +1,12 @@
+body:before {
+    content: 'ctx-ng-tags';
+    background-color: rgba(190, 190, 190, 0.3);
+    padding: 5px 15px;
+    top: 19px;
+    left: 18px;
+    position: absolute;
+    z-index: 1000000;
+    border-radius: 40px;
+    color: #ccc;
+    border: 2px solid #888;
+}

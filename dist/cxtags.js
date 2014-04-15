@@ -1,11 +1,11 @@
 /*!
- * ngTagsInput v1.1.1
+ * cxTags v1.1.1
  * http://mbenford.github.io/ngTagsInput
  *
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-10 16:51:04 +0100
+ * Generated at 2014-04-15 11:10:08 +0100
  */
 (function() {
 'use strict';
@@ -21,9 +21,11 @@ var KEYS = {
     comma: 188
 };
 
-var tagsInput = angular.module('ngTagsInput', []);
 
-tagsInput.constant('EVENT', {
+var cxTags= angular.module('cxTags', []);
+
+
+cxTags.constant('EVENT', {
     getTags: 'get-tags',
     tagAdded: 'tag-added',
     tagRemoved: 'tag-removed',      // this event is dispatched when the tag is removed from the array of tags
@@ -64,7 +66,7 @@ tagsInput.constant('EVENT', {
  * @param {expression} onTagRemoved Expression to evaluate upon removing an existing tag. The removed tag is available as $tag.
  */
 
-tagsInput.directive('tagsInput', [
+cxTags.directive('tagsInput', [
     '$document',
     '$rootScope',
     '$timeout',
@@ -107,8 +109,8 @@ tagsInput.directive('tagsInput', [
             },
             replace: false,
             transclude: true,
-            templateUrl: 'ngTagsInput/tags-input.html',
-            controller: ["$scope","$attrs","$element", function($scope, $attrs, $element) {
+            templateUrl: 'cxTags/tags-input.html',
+            controller: function($scope, $attrs, $element) {
                 var shouldRemoveLastTag;
 
                 tagsInputConfig.load('tagsInput', $scope, $attrs, {
@@ -142,6 +144,7 @@ tagsInput.directive('tagsInput', [
 
                     if ((tag) &&
                         (tag.label) &&
+                        (angular.isString(tag.label)) &&
                         (tag.label.length >= $scope.options.minLength) &&
                         ($scope.options.allowedTagsPattern.test(tag.label))
                     ) {
@@ -245,7 +248,7 @@ tagsInput.directive('tagsInput', [
                         }
                     };
                 };
-            }],
+            },
             link: function(scope, element, attrs, ngModelCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.comma, KEYS.space, KEYS.backspace];
                 var input = element.find('input');
@@ -318,7 +321,7 @@ tagsInput.directive('tagsInput', [
 
 
 /*globals console:true*/
-tagsInput.directive('cxTagList', [
+cxTags.directive('cxTagList', [
     '$rootScope',
     '$timeout',
     'EVENT',
@@ -354,7 +357,7 @@ tagsInput.directive('cxTagList', [
                 tags: '='
             },
             replace: true,
-            templateUrl: 'ngTagsInput/tag-list.html',
+            templateUrl: 'cxTags/tag-list.html',
             link: linkFn
         };
     }
@@ -381,7 +384,7 @@ tagsInput.directive('cxTagList', [
  * @param {number=} [maxResultsToShow=10] Maximum number of results to be displayed at a time.
  */
 
-tagsInput.directive('autoComplete', [
+cxTags.directive('autoComplete', [
     '$document',
     '$timeout',
     '$sce',
@@ -486,7 +489,7 @@ tagsInput.directive('autoComplete', [
                 source: '&',
                 families: '='
             },
-            templateUrl: 'ngTagsInput/auto-complete.html',
+            templateUrl: 'cxTags/auto-complete.html',
             link: function(scope, element, attrs, tagsInputCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.tab, KEYS.escape, KEYS.up, KEYS.down],
                     suggestionList, tagsInput, markdown;
@@ -591,13 +594,14 @@ tagsInput.directive('autoComplete', [
  * @description
  * Re-creates the old behavior of ng-transclude. Used internally by tagsInput directive.
  */
-tagsInput.directive('tiTranscludeAppend', function() {
+cxTags.directive('tiTranscludeAppend', function() {
     return function(scope, element, attrs, ctrl, transcludeFn) {
         transcludeFn(function(clone) {
             element.append(clone);
         });
     };
 });
+
 
 /**
  * @ngDoc directive
@@ -606,7 +610,7 @@ tagsInput.directive('tiTranscludeAppend', function() {
  * @description
  * Automatically sets the input's width so its content is always visible. Used internally by tagsInput directive.
  */
-tagsInput.directive('tiAutosize', function() {
+cxTags.directive('tiAutosize', function() {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -644,6 +648,7 @@ tagsInput.directive('tiAutosize', function() {
     };
 });
 
+
 /*globals console: true*/
 /*
  * @ngdoc service
@@ -652,7 +657,7 @@ tagsInput.directive('tiAutosize', function() {
  * @description
  * Provides highlight for matched text inside tag attributes
  * */
-tagsInput.directive('ngTagHighlight', [
+cxTags.directive('ngTagHighlight', [
     function() {
 
         return {
@@ -685,7 +690,7 @@ tagsInput.directive('ngTagHighlight', [
  * Sets global default configuration options for tagsInput and autoComplete directives. It's also used internally to parse and
  * initialize options from HTML attributes.
  */
-tagsInput.provider('tagsInputConfig', function() {
+cxTags.provider('tagsInputConfig', function() {
     var globalDefaults = {};
 
     /**
@@ -703,7 +708,7 @@ tagsInput.provider('tagsInputConfig', function() {
         return this;
     };
 
-    this.$get = ["$interpolate", function($interpolate) {
+    this.$get = function($interpolate) {
         var converters = {};
         converters[String] = function(value) { return value; };
         converters[Number] = function(value) { return parseInt(value, 10); };
@@ -726,23 +731,23 @@ tagsInput.provider('tagsInputConfig', function() {
                 });
             }
         };
-    }];
+    };
 });
 
 
 /* HTML templates */
-tagsInput.run(["$templateCache", function($templateCache) {
-    $templateCache.put('ngTagsInput/tags-input.html',
-    "<div class=\"ngTagsInput ctx-tags\" tabindex=\"-1\" ng-class=\"options.customClass\" ti-transclude-append=\"\"><div class=\"tags\" ng-class=\"{focused: hasFocus}\"><ul class=\"tag-list\" ng-show=\"!hideTags\"><li class=\"tag-item\" ng-repeat=\"tag in tags\" ng-class=\"getCssClass($index)\"><span>{{tag.label}}</span> <button type=\"button\" ng-click=\"remove($index)\">{{options.removeTagSymbol}}</button></li></ul><input class=\"tag-input\" id=\"{{ id }}\" placeholder=\"{{options.placeholder}}\" maxlength=\"{{options.maxLength}}\" tabindex=\"{{options.tabindex}}\" ng-model=\"newTag\" ng-change=\"newTagChange()\" ti-autosize=\"\"></div></div>"
+cxTags.run(function($templateCache) {
+    $templateCache.put('cxTags/tags-input.html',
+    "<div class=\"ngTagsInput ctx-tags\" tabindex=\"-1\" ng-class=\"options.customClass\" ti-transclude-append=\"\"><div class=\"tags\" ng-class=\"{focused: hasFocus}\"><ul class=\"tag-list\" ng-if=\"!hideTags\"><li class=\"tag-item\" ng-repeat=\"tag in tags\" ng-class=\"getCssClass($index)\"><span>{{tag.label}}</span> <button type=\"button\" ng-click=\"remove($index)\">{{options.removeTagSymbol}}</button></li></ul><input class=\"tag-input\" id=\"{{ id }}\" placeholder=\"{{options.placeholder}}\" maxlength=\"{{options.maxLength}}\" tabindex=\"{{options.tabindex}}\" ng-model=\"newTag\" ng-change=\"newTagChange()\" ti-autosize=\"\"></div></div>"
   );
 
-  $templateCache.put('ngTagsInput/auto-complete.html',
+  $templateCache.put('cxTags/auto-complete.html',
     "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items | limitTo:options.maxResultsToShow\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li ng-repeat=\"(key, value) in item.attributes\" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li><li class=\"tag-description\"><span class=\"tag-attribute-key\">Description</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li></ul></li></ul></div>"
   );
 
-  $templateCache.put('ngTagsInput/tag-list.html',
+  $templateCache.put('cxTags/tag-list.html',
     "<span class=\"cx-tag-list\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList\"><span>{{tag.label}}</span> <button type=\"button\" data-ng-if=\"removeEnabled\" ng-click=\"remove($index)\">×</button></li></ul></span>"
   );
-}]);
+});
 
 }());
