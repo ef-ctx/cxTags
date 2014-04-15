@@ -27,8 +27,8 @@ module.exports = function(config) {
 
         ngHtml2JsPreprocessor: {
             stripPrefix: 'templates/',
-            prependPrefix: 'ngTagsInput/',
-            moduleName: 'ngTagsInput'
+            prependPrefix: 'cxTags/',
+            moduleName: 'cxTags'
         },
 
         coverageReporter: {

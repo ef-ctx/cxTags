@@ -1,7 +1,7 @@
 /*globals console:true*/
 'use strict';
 
-tagsInput.directive('cxTagList', [
+cxTags.directive('cxTagList', [
     '$rootScope',
     '$timeout',
     'EVENT',
@@ -37,7 +37,7 @@ tagsInput.directive('cxTagList', [
                 tags: '='
             },
             replace: true,
-            templateUrl: 'ngTagsInput/tag-list.html',
+            templateUrl: 'cxTags/tag-list.html',
             link: linkFn
         };
     }

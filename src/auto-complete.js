@@ -21,7 +21,7 @@
  */
 
 
-tagsInput.directive('autoComplete', [
+cxTags.directive('autoComplete', [
     '$document',
     '$timeout',
     '$sce',
@@ -126,7 +126,7 @@ tagsInput.directive('autoComplete', [
                 source: '&',
                 families: '='
             },
-            templateUrl: 'ngTagsInput/auto-complete.html',
+            templateUrl: 'cxTags/auto-complete.html',
             link: function(scope, element, attrs, tagsInputCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.tab, KEYS.escape, KEYS.up, KEYS.down],
                     suggestionList, tagsInput, markdown;

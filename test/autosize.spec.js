@@ -8,7 +8,7 @@ describe('autosize directive', function() {
     $('<style> .tag-input { box-sizing: border-box; border: 1px; padding: 2px; font: Arial 18px; }</style>').appendTo('head');
 
     beforeEach(function() {
-        module('ngTagsInput');
+        module('cxTags');
 
         inject(function($rootScope, _$document_, _$compile_) {
             $scope = $rootScope;

@@ -17,7 +17,7 @@ describe('tags-input-directive', function() {
         
 
     beforeEach(function() {
-        module('ngTagsInput');
+        module('cxTags');
 
         inject(function(_$compile_, _$rootScope_, _$document_, _$timeout_, EVENT) {
             $compile = _$compile_;

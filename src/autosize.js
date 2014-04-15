@@ -7,7 +7,7 @@
  * @description
  * Automatically sets the input's width so its content is always visible. Used internally by tagsInput directive.
  */
-tagsInput.directive('tiAutosize', function() {
+cxTags.directive('tiAutosize', function() {
     return {
         restrict: 'A',
         require: 'ngModel',

@@ -3,8 +3,8 @@
 		"name": "Michael Benford",
 		"email": "michael@michaelbenford.net"
 	},
-	"name": "ng-tags-input",
-	"prettyName": "ngTagsInput",
+	"name": "cxtags",
+	"prettyName": "cxTags",
 	"version": "1.1.1",
 	"description": "Tags input directive for AngularJS",
 	"license": "MIT",

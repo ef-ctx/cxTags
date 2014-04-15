@@ -7,7 +7,7 @@ describe('transclude-append-directive', function () {
         element;
 
     beforeEach(function () {
-        module('ngTagsInput');
+        module('cxTags');
         module(function($compileProvider) {
             directive = $compileProvider.directive;
         });

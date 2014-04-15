@@ -7,7 +7,7 @@
  * @description
  * Provides highlight for matched text inside tag attributes
  * */
-tagsInput.directive('ngTagHighlight', [
+cxTags.directive('ngTagHighlight', [
     function() {
 
         return {

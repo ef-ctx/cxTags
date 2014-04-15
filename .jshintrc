@@ -28,7 +28,7 @@
         "jasmine": true,
         "spyOn": true,
         "require": true,
-        "tagsInput": true,
+        "cxTags": true,
         "SimplePubSub": true,
         "makeObjectArray": true,
         "findInObjectArray": true,

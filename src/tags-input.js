@@ -30,7 +30,7 @@
  * @param {expression} onTagRemoved Expression to evaluate upon removing an existing tag. The removed tag is available as $tag.
  */
 
-tagsInput.directive('tagsInput', [
+cxTags.directive('tagsInput', [
     '$document',
     '$rootScope',
     '$timeout',
@@ -73,7 +73,7 @@ tagsInput.directive('tagsInput', [
             },
             replace: false,
             transclude: true,
-            templateUrl: 'ngTagsInput/tags-input.html',
+            templateUrl: 'cxTags/tags-input.html',
             controller: function($scope, $attrs, $element) {
                 var shouldRemoveLastTag;
 

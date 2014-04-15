@@ -94,7 +94,7 @@ describe('autocomplete-directive', function() {
         };
 
     beforeEach(function() {
-        module('ngTagsInput');
+        module('cxTags');
 
         inject(function($rootScope, _$compile_, _$q_, _$timeout_) {
             $scope = $rootScope;
