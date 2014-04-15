@@ -27,7 +27,7 @@ module.exports = {
 
     dev: {
         files:{
-            '<%= files.css.out %>': ['<%= files.css.dev %>']
+            '<%= files.css.out %>': ['<%= files.css.src %>', '<%= files.css.dev %>']
         }
     }
 

@@ -3,7 +3,7 @@
 		"name": "Michael Benford",
 		"email": "michael@michaelbenford.net"
 	},
-	"name": "cxtags",
+	"name": "cx-tags",
 	"prettyName": "cxTags",
 	"version": "1.1.1",
 	"description": "Tags input directive for AngularJS",
