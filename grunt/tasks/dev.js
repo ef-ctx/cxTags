@@ -5,7 +5,7 @@ module.exports = function(grunt) {
         'test',
         'clean',
         'ngtemplates',
-        'concat:dev',
+        'concat',
         'uglify',
         'cssmin',
         'compress',
