@@ -2,7 +2,7 @@
 .project
 .settings/
 node_modules/
-coverage/
+grunt/coverage/
 build/
 *.log
 
