@@ -1,11 +1,10 @@
 module.exports = function(grunt) {
     'use strict';
 
-    grunt.registerTask('release', [
-        'pack',
+    grunt.registerTask('compile-dev', [
+        'build',
         'changelog',
         'replace:changelog',
-//        'shell:git',
         'copy:dist'
     ]);
     

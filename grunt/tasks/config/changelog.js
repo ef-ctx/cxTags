@@ -1,7 +1,7 @@
 module.exports = {
 
     options: {
-        github: 'EFEdcuationFirstMobile/ngTagsInput'
+        github: 'ef-ctx/cxTags'
     }
 
 };
