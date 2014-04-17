@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-15 13:43:26 +0100
+ * Generated at 2014-04-17 13:22:26 +0100
  */
 (function() {
 'use strict';
@@ -240,6 +240,9 @@ cxTags.directive('tagsInput', [
                             input[0].focus();
                         },
                         getTags: function() {
+                            if (!$scope.tags){
+                                $scope.tags = [];
+                            }
                             return $scope.tags;
                         },
                         on: function(name, handler) {

@@ -205,6 +205,9 @@ cxTags.directive('tagsInput', [
                             input[0].focus();
                         },
                         getTags: function() {
+                            if (!$scope.tags){
+                                $scope.tags = [];
+                            }
                             return $scope.tags;
                         },
                         on: function(name, handler) {
