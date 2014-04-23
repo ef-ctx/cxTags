@@ -49,14 +49,15 @@ cxTags.directive('tagsInput', [
                     events[name].push(handler);
                 },
                 trigger: function(name, args) {
+                    if (name && name.length > 0) {
+                        if (messagingNamespace && messagingNamespace.length > 0) {
+                            $rootScope.$broadcast(messagingNamespace + '.' + name, args);
+                        }
 
-                    if (messagingNamespace && messagingNamespace.length > 0) {
-                        $rootScope.$broadcast(messagingNamespace + '.' + name, args);
+                        angular.forEach(events[name], function(handler) {
+                            handler.call(null, args);
+                        });
                     }
-
-                    angular.forEach(events[name], function(handler) {
-                        handler.call(null, args);
-                    });
                 }
             };
         }

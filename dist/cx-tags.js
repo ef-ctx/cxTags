@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-23 14:43:47 +0100
+ * Generated at 2014-04-23 17:59:12 +0100
  */
 (function() {
 'use strict';
@@ -85,14 +85,15 @@ cxTags.directive('tagsInput', [
                     events[name].push(handler);
                 },
                 trigger: function(name, args) {
+                    if (name && name.length > 0) {
+                        if (messagingNamespace && messagingNamespace.length > 0) {
+                            $rootScope.$broadcast(messagingNamespace + '.' + name, args);
+                        }
 
-                    if (messagingNamespace && messagingNamespace.length > 0) {
-                        $rootScope.$broadcast(messagingNamespace + '.' + name, args);
+                        angular.forEach(events[name], function(handler) {
+                            handler.call(null, args);
+                        });
                     }
-
-                    angular.forEach(events[name], function(handler) {
-                        handler.call(null, args);
-                    });
                 }
             };
         }

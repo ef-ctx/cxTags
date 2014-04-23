@@ -1,5 +1,11 @@
 ### v1.1.1 (2014-04-23)
 
+#### Bug Fixes
+
+* **input:** input text was missing ([f874d7e7](http://github.com/ef-ctx/cxTags/commit/f874d7e7cf290b434c0f76215f9da98396ca123b))
+
+### v1.1.1 (2014-04-23)
+
 ### v1.1.1 (2014-04-23)
 
 ### v1.1.1 (2014-04-23)
