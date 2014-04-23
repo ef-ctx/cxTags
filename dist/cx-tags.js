@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-17 13:22:26 +0100
+ * Generated at 2014-04-23 12:54:16 +0100
  */
 (function() {
 'use strict';
@@ -391,8 +391,10 @@ cxTags.directive('autoComplete', [
     '$document',
     '$timeout',
     '$sce',
+    '$location',
+    '$anchorScroll',
     'tagsInputConfig',
-    function($document, $timeout, $sce, tagsInputConfig) {
+    function($document, $timeout, $sce, $location, $anchorScroll, tagsInputConfig) {
 
         function SuggestionList(loadFn, families, options) {
             var self = {}, debouncedLoadId, getDifference, lastPromise;
@@ -466,9 +468,11 @@ cxTags.directive('autoComplete', [
             };
             self.selectNext = function() {
                 self.select(++self.index);
+                //self.scrollToTag(self.index);
             };
             self.selectPrior = function() {
                 self.select(--self.index);
+                //self.scrollToTag(self.index);
             };
             self.select = function(index) {
                 if (index < 0) {
@@ -479,6 +483,18 @@ cxTags.directive('autoComplete', [
                 self.index = index;
                 self.selected = self.items[index];
             };
+            /*
+
+            self.scrollToTag = function (index){
+                var itemIdPreffix = 'suggestion-item-',
+                    itemId = itemIdPreffix + index;
+
+                $location.hash(itemId);
+
+                $anchorScroll();
+            };
+
+*/
 
             self.reset();
 
@@ -585,6 +601,22 @@ cxTags.directive('autoComplete', [
                     }
                 });
             }
+        };
+    }
+])
+
+.filter('filterAttributes', [
+
+    function() {
+        return function(input) {
+            var result = angular.copy(input);
+            if (result.examples){
+                delete result.examples;
+            }
+            if (input.compassId){
+                delete result.compassId;
+            }
+            return result;
         };
     }
 ]);
@@ -745,7 +777,7 @@ cxTags.run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put('cxTags/auto-complete.html',
-    "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items | limitTo:options.maxResultsToShow\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li ng-repeat=\"(key, value) in item.attributes\" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li><li class=\"tag-description\"><span class=\"tag-attribute-key\">Description</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li></ul></li></ul></div>"
+    "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li id=\"suggestion-item-{{ $index }}\" class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items | limitTo:options.maxResultsToShow\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li class=\"tag-description\"><span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li><li class=\"attributes\"><ul><li ng-repeat=\"(key, value) in item.attributes | filterAttributes \" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li></ul></li><li class=\"tag-examples\" ng-if=\"item.attributes && item.attributes.examples && (item.attributes.examples.length > 0)\"><span class=\"tag-attribute-key\">Examples</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.attributes.examples }}\"></span></li></ul></li></ul></div>"
   );
 
   $templateCache.put('cxTags/tag-list.html',
