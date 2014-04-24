@@ -100,7 +100,7 @@
     height: 21px;
     float: left;
     font: 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #999;
+    color: #000;
 }
 
 .ngTagsInput .tags input::-ms-clear {

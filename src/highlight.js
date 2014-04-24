@@ -22,9 +22,9 @@ cxTags.directive('ngTagHighlight', [
             link: function (scope, element, attrs, tagInputCtrl) {
                 var value = scope.ngTagHighlight,
                     inputText = tagInputCtrl.getInputValue(),
-                    re = new RegExp(inputText, 'gi');
+                    re = new RegExp('(' + inputText + ')', 'gi');
 
-                element.html(value.replace(re, '<span class="highlighted">' + inputText + '</span>'));
+                element.html(value.replace(re, '<span class="highlighted">$1</span>'));
             }
 
         };
