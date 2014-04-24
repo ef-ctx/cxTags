@@ -1,3 +1,10 @@
+### v1.1.1 (2014-04-24)
+
+#### Bug Fixes
+
+* SimplePubSub was dispatching empty events ([4dcb133e](http://github.com/ef-ctx/cxTags/commit/4dcb133e5dcf8187678db9286159f615f8c530ec))
+* **input:** input text was missing ([f874d7e7](http://github.com/ef-ctx/cxTags/commit/f874d7e7cf290b434c0f76215f9da98396ca123b))
+
 ### v1.1.1 (2014-04-23)
 
 #### Bug Fixes

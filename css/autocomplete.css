@@ -31,7 +31,7 @@
 }
 .ngTagsInput .autocomplete .suggestion-item.selected {
     color: #fff;
-    background-color: #0097cf
+    background-color: #0097cf;
 }
 .ngTagsInput .autocomplete .suggestion-item em {
     font-weight: bold;
@@ -40,6 +40,10 @@
 .ngTagsInput .autocomplete .suggestion-item ul {
     padding: 0;
 }
+.ngTagsInput .autocomplete .suggestion-item:last-child {
+    border:none;
+}
+
 .ngTagsInput .autocomplete .suggestion-item {
     white-space: normal !important;
     border-bottom: 2px solid #ccc;
@@ -48,23 +52,35 @@
 .ngTagsInput .autocomplete .suggestion-item .tag-label {
     font-weight: bold;
     color: #999;
-    border-right: none;
     margin-right: 0;
     padding-right: 9px;
 }
+.ngTagsInput .autocomplete .suggestion-item .tag-family:after {
+    content: ' )';
+}
+.ngTagsInput .autocomplete .suggestion-item .tag-family:before{
+    content: '( ';
+}
+.ngTagsInput .autocomplete .suggestion-item .tag-family{
+    color: #aaa;
+    font-size: 0.8em;
+    padding-right: 2px;
+    margin-right: 2px;
+}
 .ngTagsInput .autocomplete .suggestion-item .tag-description {
     display: inline-block;
-    border: none;
 }
 .ngTagsInput .autocomplete .suggestion-item .tag-attribute:last-item {
     border: none;
 }
-.ngTagsInput .autocomplete .suggestion-item ul li {
+.ngTagsInput .autocomplete .suggestion-item li{
     display: inline;
-    border-right: 2px solid #ccc;
     padding-right: 16px;
     margin-right: 16px;
     font-size: 14px;
+}
+.ngTagsInput .autocomplete .suggestion-item li.attributes li {
+    border-right: 2px solid #ccc;
 }
 .ngTagsInput .autocomplete .suggestion-item .attributes {
     display: block;
@@ -86,7 +102,7 @@
     font-style: italic;
     color: #ccc;
 }
-.ngTagsInput .autocomplete .suggestion-item .tag-attribute-value {
+.ngTagsInput .autocomplete .suggestion-item {
     color: #aaa;
 }
 .highlighted {

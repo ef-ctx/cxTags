@@ -3,8 +3,9 @@
         <li id="suggestion-item-{{ $index }}" class="suggestion-item" ng-repeat="item in suggestionList.items | limitTo:options.maxResultsToShow" ng-class="{selected: item == suggestionList.selected}" ng-click="addSuggestion()" ng-mouseenter="suggestionList.select($index)">
             <ul>
                 <li class="tag-label" data-ng-tag-highlight="{{ item.label }}"></li>
-                <li class="tag-description">
-                    <span class="tag-attribute-value" data-ng-tag-highlight="{{ item.description }}"></span> 
+                <li class="tag-family" data-ng-tag-highlight="{{ item.family }}"></li>
+                <li class="tag-description" ng-if="item.description && item.description.length > 0">
+                    : <span class="tag-attribute-value" data-ng-tag-highlight="{{ item.description }}"></span> 
                 </li>
                 <li class="attributes">
                     <ul>

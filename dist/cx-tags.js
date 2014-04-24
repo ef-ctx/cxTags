@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-23 17:59:12 +0100
+ * Generated at 2014-04-24 11:25:40 +0100
  */
 (function() {
 'use strict';
@@ -778,7 +778,7 @@ cxTags.run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put('cxTags/auto-complete.html',
-    "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li id=\"suggestion-item-{{ $index }}\" class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items | limitTo:options.maxResultsToShow\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li class=\"tag-description\"><span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li><li class=\"attributes\"><ul><li ng-repeat=\"(key, value) in item.attributes | filterAttributes \" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li></ul></li><li class=\"tag-examples\" ng-if=\"item.attributes && item.attributes.examples && (item.attributes.examples.length > 0)\"><span class=\"tag-attribute-key\">Examples</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.attributes.examples }}\"></span></li></ul></li></ul></div>"
+    "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li id=\"suggestion-item-{{ $index }}\" class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items | limitTo:options.maxResultsToShow\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li class=\"tag-family\" data-ng-tag-highlight=\"{{ item.family }}\"></li><li class=\"tag-description\" ng-if=\"item.description && item.description.length > 0\">: <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li><li class=\"attributes\"><ul><li ng-repeat=\"(key, value) in item.attributes | filterAttributes \" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li></ul></li><li class=\"tag-examples\" ng-if=\"item.attributes && item.attributes.examples && (item.attributes.examples.length > 0)\"><span class=\"tag-attribute-key\">Examples</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.attributes.examples }}\"></span></li></ul></li></ul></div>"
   );
 
   $templateCache.put('cxTags/tag-list.html',
