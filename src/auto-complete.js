@@ -28,7 +28,8 @@ cxTags.directive('autoComplete', [
     '$location',
     '$anchorScroll',
     'tagsInputConfig',
-    function($document, $timeout, $sce, $location, $anchorScroll, tagsInputConfig) {
+    'EVENT',
+    function($document, $timeout, $sce, $location, $anchorScroll, tagsInputConfig, EVENT) {
 
         function SuggestionList(loadFn, families, options) {
             var self = {}, debouncedLoadId, getDifference, lastPromise;
@@ -65,9 +66,9 @@ cxTags.directive('autoComplete', [
                 self.visible = true;
             };
 
-            self.load = function(query, tags) {
+            self.load = function(query, tags, skipLengthChecking) {
 
-                if (query.length < options.minLength) {
+                if ((!skipLengthChecking) && (query.length < options.minLength)) {
                     self.reset();
                     return;
                 }
@@ -101,36 +102,25 @@ cxTags.directive('autoComplete', [
                 }, options.debounceDelay, false);
             };
             self.selectNext = function() {
-                self.select(++self.index);
-                //self.scrollToTag(self.index);
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
+                if (self.index < self.items.length - 1) {
+                    self.select(++self.index);
+                }
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
             };
             self.selectPrior = function() {
-                self.select(--self.index);
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
+                if (self.index > 0) {
+                    self.select(--self.index);
+                }
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
+
                 //self.scrollToTag(self.index);
             };
             self.select = function(index) {
-                if (index < 0) {
-                    index = self.items.length - 1;
-                } else if (index >= self.items.length) {
-                    index = 0;
-                }
                 self.index = index;
                 self.selected = self.items[index];
             };
-            /*
-
-
-            self.scrollToTag = function (index){
-                var itemIdPreffix = 'suggestion-item-',
-                    itemId = itemIdPreffix + index;
-
-                $location.hash(itemId);
-
-                $anchorScroll();
-            };
-
-
-*/
 
             self.reset();
 
@@ -142,18 +132,59 @@ cxTags.directive('autoComplete', [
             require: '^tagsInput',
             scope: {
                 source: '&',
-                families: '='
+                families: '=',
+                loadOnClick: '=',
+                loadOnFocus: '='
             },
             templateUrl: 'cxTags/auto-complete.html',
             link: function(scope, element, attrs, tagsInputCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.tab, KEYS.escape, KEYS.up, KEYS.down],
-                    suggestionList, tagsInput, markdown;
+                    suggestionList,
+                    tagsInput,
+                    markdown,
+                    container = {top: 0},
+                    wrapper = {top: 0},
+                    scroll = {
+                        move: function(origin, moveForward) {
+                            var el = document.getElementById('suggestion-item-' + suggestionList.index),
+                                step = (el) ? el.offsetHeight : 0,
+                                scroll;
+
+                            container.el = element.find('ul')[0];
+                            container.height = container.el.clientHeight;
+                            wrapper.el = element.find('div')[0];
+                            wrapper.height = wrapper.el.clientHeight;
+
+                            if (moveForward) {
+                                if ((container.top - step) < -(container.height - wrapper.height)) {
+                                    container.top = -(container.height - wrapper.height + 10);
+                                } else {
+                                    container.top -= step;
+                                }
+                            } else {
+                                if ((container.top + step) > 0) {
+                                    container.top = 0;
+                                } else {
+                                    container.top += step;
+                                }
+                            }
+
+                            console.log('currentPosition : ', container.top);
+                            angular.element(container.el).css('top', container.top + 'px');
+
+                        },
+                        reset: function () {
+                            container.top = 0;
+                            angular.element(container.el).css('top', container.top + 'px');
+                        }
+                    };
+
 
                 tagsInputConfig.load('autoComplete', scope, attrs, {
                     debounceDelay: [Number, 100],
-                    minLength: [Number, 3],
+                    minLength: [Number, (scope.loadOnClick || scope.loadOnFocus) ? 0 : 3],
                     highlightMatchedText: [Boolean, true],
-                    maxResultsToShow: [Number, 10]
+                    maxResultsToShow: [Number, (scope.loadOnClick || scope.loadOnFocus) ? 1000000 : 10]
                 });
 
                 tagsInput = tagsInputCtrl.registerAutocomplete();
@@ -175,15 +206,30 @@ cxTags.directive('autoComplete', [
                 };
 
                 tagsInput
-                    .on('input-change', function(value) {
+                    .on(EVENT.inputChange, function(value) {
                         scope.inputValue = value;
                         if (value) {
                             suggestionList.load(value, tagsInput.getTags());
+                            scroll.reset();
                         } else {
                             suggestionList.reset();
+                            scroll.reset();
                         }
                     })
-                    .on('input-keydown', function(e) {
+                    .on(EVENT.inputClick, function(e) {
+                        scroll.reset();
+                        if (scope.loadOnClick) {
+                            suggestionList.load('', tagsInput.getTags(), true);
+                        }
+                    })
+                    .on(EVENT.inputFocus, function(e) {
+                        scroll.reset();
+                        if (scope.loadOnFocus) {
+                            suggestionList.load('', tagsInput.getTags(), true);
+                        }
+                    })
+                    .on(EVENT.inputKeyDown, function(e) {
+
                         var key, handled;
 
                         if (hotkeys.indexOf(e.keyCode) === -1) {
@@ -207,12 +253,15 @@ cxTags.directive('autoComplete', [
                             handled = false;
 
                             if (key === KEYS.down) {
+                                scroll.move(suggestionList.index, true);
                                 suggestionList.selectNext();
                                 handled = true;
                             } else if (key === KEYS.up) {
+                                scroll.move(suggestionList.index, false);
                                 suggestionList.selectPrior();
                                 handled = true;
                             } else if (key === KEYS.escape) {
+                                scroll.reset();
                                 suggestionList.reset();
                                 handled = true;
                             } else if (key === KEYS.enter || key === KEYS.tab) {
@@ -226,7 +275,7 @@ cxTags.directive('autoComplete', [
                             }
                         }
                     })
-                    .on('input-blur', function() {
+                    .on(EVENT.inputBlur, function() {
                         suggestionList.reset();
                     });
 
@@ -246,10 +295,10 @@ cxTags.directive('autoComplete', [
     function() {
         return function(input) {
             var result = angular.copy(input);
-            if (result.examples){
+            if (result.examples) {
                 delete result.examples;
             }
-            if (input.compassId){
+            if (input.compassId) {
                 delete result.compassId;
             }
             return result;

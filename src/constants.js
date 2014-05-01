@@ -7,5 +7,7 @@ cxTags.constant('EVENT', {
     removeTag: 'remove-tag',        // this event is dispatched from an external taglist 
     inputChange: 'input-change',
     inputKeyDown: 'input-keydown',
-    inputBlur: 'input-blur'
+    inputBlur: 'input-blur',
+    inputFocus: 'input-focus',
+    inputClick: 'input-click'
 });

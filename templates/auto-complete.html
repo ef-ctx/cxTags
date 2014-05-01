@@ -1,6 +1,6 @@
 <div class="autocomplete" ng-show="suggestionList.visible">
     <ul class="suggestion-list">
-        <li id="suggestion-item-{{ $index }}" class="suggestion-item" ng-repeat="item in suggestionList.items | limitTo:options.maxResultsToShow" ng-class="{selected: item == suggestionList.selected}" ng-click="addSuggestion()" ng-mouseenter="suggestionList.select($index)">
+        <li id="suggestion-item-{{ $index }}" class="suggestion-item" ng-repeat="item in suggestionList.items" ng-class="{selected: item == suggestionList.selected}" ng-click="addSuggestion()" ng-mouseenter="suggestionList.select($index)">
             <ul>
                 <li class="tag-label" data-ng-tag-highlight="{{ item.label }}"></li>
                 <li class="tag-family" data-ng-tag-highlight="{{ item.family }}"></li>

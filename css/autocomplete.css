@@ -9,13 +9,15 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     width: 100%;
     z-index: 999;
-    max-height: 600px;
+    max-height: 400px;
     overflow: scroll;
 }
 .ngTagsInput .autocomplete .suggestion-list {
     margin: 0;
     padding: 0;
     list-style-type: none;
+    position: relative;
+    transition: all linear 0.1s;
 }
 .ngTagsInput .autocomplete .suggestion-item {
     padding: 3px 16px;

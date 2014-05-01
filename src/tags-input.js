@@ -193,6 +193,14 @@ cxTags.directive('tagsInput', [
                         $scope.events.trigger(EVENT.inputKeyDown, e);
                     });
 
+                    input.parent().on('click', function(e){
+                        $scope.events.trigger(EVENT.inputClick);
+                    });
+                    
+                    input.on('focus', function(e){
+                        $scope.events.trigger(EVENT.inputFocus);
+                    });
+
                     $scope.newTagChange = function() {
                         $scope.events.trigger(EVENT.inputChange, $scope.newTag);
                     };

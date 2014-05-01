@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-04-24 17:10:11 +0100
+ * Generated at 2014-05-01 10:31:24 +0100
  */
 (function() {
 'use strict';
@@ -32,7 +32,9 @@ cxTags.constant('EVENT', {
     removeTag: 'remove-tag',        // this event is dispatched from an external taglist 
     inputChange: 'input-change',
     inputKeyDown: 'input-keydown',
-    inputBlur: 'input-blur'
+    inputBlur: 'input-blur',
+    inputFocus: 'input-focus',
+    inputClick: 'input-click'
 });
 
 
@@ -111,7 +113,7 @@ cxTags.directive('tagsInput', [
             replace: false,
             transclude: true,
             templateUrl: 'cxTags/tags-input.html',
-            controller: ["$scope","$attrs","$element", function($scope, $attrs, $element) {
+            controller: function($scope, $attrs, $element) {
                 var shouldRemoveLastTag;
 
                 tagsInputConfig.load('tagsInput', $scope, $attrs, {
@@ -228,6 +230,14 @@ cxTags.directive('tagsInput', [
                         $scope.events.trigger(EVENT.inputKeyDown, e);
                     });
 
+                    input.parent().on('click', function(e){
+                        $scope.events.trigger(EVENT.inputClick);
+                    });
+                    
+                    input.on('focus', function(e){
+                        $scope.events.trigger(EVENT.inputFocus);
+                    });
+
                     $scope.newTagChange = function() {
                         $scope.events.trigger(EVENT.inputChange, $scope.newTag);
                     };
@@ -252,7 +262,7 @@ cxTags.directive('tagsInput', [
                         }
                     };
                 };
-            }],
+            },
             link: function(scope, element, attrs, ngModelCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.comma, KEYS.space, KEYS.backspace];
                 var input = element.find('input');
@@ -395,7 +405,8 @@ cxTags.directive('autoComplete', [
     '$location',
     '$anchorScroll',
     'tagsInputConfig',
-    function($document, $timeout, $sce, $location, $anchorScroll, tagsInputConfig) {
+    'EVENT',
+    function($document, $timeout, $sce, $location, $anchorScroll, tagsInputConfig, EVENT) {
 
         function SuggestionList(loadFn, families, options) {
             var self = {}, debouncedLoadId, getDifference, lastPromise;
@@ -432,9 +443,9 @@ cxTags.directive('autoComplete', [
                 self.visible = true;
             };
 
-            self.load = function(query, tags) {
+            self.load = function(query, tags, skipLengthChecking) {
 
-                if (query.length < options.minLength) {
+                if ((!skipLengthChecking) && (query.length < options.minLength)) {
                     self.reset();
                     return;
                 }
@@ -468,34 +479,25 @@ cxTags.directive('autoComplete', [
                 }, options.debounceDelay, false);
             };
             self.selectNext = function() {
-                self.select(++self.index);
-                //self.scrollToTag(self.index);
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
+                if (self.index < self.items.length - 1) {
+                    self.select(++self.index);
+                }
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
             };
             self.selectPrior = function() {
-                self.select(--self.index);
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
+                if (self.index > 0) {
+                    self.select(--self.index);
+                }
+                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
+
                 //self.scrollToTag(self.index);
             };
             self.select = function(index) {
-                if (index < 0) {
-                    index = self.items.length - 1;
-                } else if (index >= self.items.length) {
-                    index = 0;
-                }
                 self.index = index;
                 self.selected = self.items[index];
             };
-            /*
-
-            self.scrollToTag = function (index){
-                var itemIdPreffix = 'suggestion-item-',
-                    itemId = itemIdPreffix + index;
-
-                $location.hash(itemId);
-
-                $anchorScroll();
-            };
-
-*/
 
             self.reset();
 
@@ -507,18 +509,58 @@ cxTags.directive('autoComplete', [
             require: '^tagsInput',
             scope: {
                 source: '&',
-                families: '='
+                families: '=',
+                loadOnClick: '=',
+                loadOnFocus: '='
             },
             templateUrl: 'cxTags/auto-complete.html',
             link: function(scope, element, attrs, tagsInputCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.tab, KEYS.escape, KEYS.up, KEYS.down],
-                    suggestionList, tagsInput, markdown;
+                    suggestionList,
+                    tagsInput,
+                    markdown,
+                    container = {top: 0},
+                    wrapper = {top: 0},
+                    scroll = {
+                        move: function(origin, moveForward) {
+                            var el = document.getElementById('suggestion-item-' + suggestionList.index),
+                                step = (el) ? el.offsetHeight : 0,
+                                scroll;
+
+                            container.el = element.find('ul')[0];
+                            container.height = container.el.clientHeight;
+                            wrapper.el = element.find('div')[0];
+                            wrapper.height = wrapper.el.clientHeight;
+
+                            if (moveForward) {
+                                if ((container.top - step) < -(container.height - wrapper.height)) {
+                                    container.top = -(container.height - wrapper.height + 10);
+                                } else {
+                                    container.top -= step;
+                                }
+                            } else {
+                                if ((container.top + step) > 0) {
+                                    container.top = 0;
+                                } else {
+                                    container.top += step;
+                                }
+                            }
+
+                            console.log('currentPosition : ', container.top);
+                            angular.element(container.el).css('top', container.top + 'px');
+
+                        },
+                        reset: function () {
+                            container.top = 0;
+                            angular.element(container.el).css('top', container.top + 'px');
+                        }
+                    };
 
                 tagsInputConfig.load('autoComplete', scope, attrs, {
                     debounceDelay: [Number, 100],
-                    minLength: [Number, 3],
+                    minLength: [Number, (scope.loadOnClick || scope.loadOnFocus) ? 0 : 3],
                     highlightMatchedText: [Boolean, true],
-                    maxResultsToShow: [Number, 10]
+                    maxResultsToShow: [Number, (scope.loadOnClick || scope.loadOnFocus) ? 1000000 : 10]
                 });
 
                 tagsInput = tagsInputCtrl.registerAutocomplete();
@@ -540,15 +582,30 @@ cxTags.directive('autoComplete', [
                 };
 
                 tagsInput
-                    .on('input-change', function(value) {
+                    .on(EVENT.inputChange, function(value) {
                         scope.inputValue = value;
                         if (value) {
                             suggestionList.load(value, tagsInput.getTags());
+                            scroll.reset();
                         } else {
                             suggestionList.reset();
+                            scroll.reset();
                         }
                     })
-                    .on('input-keydown', function(e) {
+                    .on(EVENT.inputClick, function(e) {
+                        scroll.reset();
+                        if (scope.loadOnClick) {
+                            suggestionList.load('', tagsInput.getTags(), true);
+                        }
+                    })
+                    .on(EVENT.inputFocus, function(e) {
+                        scroll.reset();
+                        if (scope.loadOnFocus) {
+                            suggestionList.load('', tagsInput.getTags(), true);
+                        }
+                    })
+                    .on(EVENT.inputKeyDown, function(e) {
+
                         var key, handled;
 
                         if (hotkeys.indexOf(e.keyCode) === -1) {
@@ -572,12 +629,15 @@ cxTags.directive('autoComplete', [
                             handled = false;
 
                             if (key === KEYS.down) {
+                                scroll.move(suggestionList.index, true);
                                 suggestionList.selectNext();
                                 handled = true;
                             } else if (key === KEYS.up) {
+                                scroll.move(suggestionList.index, false);
                                 suggestionList.selectPrior();
                                 handled = true;
                             } else if (key === KEYS.escape) {
+                                scroll.reset();
                                 suggestionList.reset();
                                 handled = true;
                             } else if (key === KEYS.enter || key === KEYS.tab) {
@@ -591,7 +651,7 @@ cxTags.directive('autoComplete', [
                             }
                         }
                     })
-                    .on('input-blur', function() {
+                    .on(EVENT.inputBlur, function() {
                         suggestionList.reset();
                     });
 
@@ -611,10 +671,10 @@ cxTags.directive('autoComplete', [
     function() {
         return function(input) {
             var result = angular.copy(input);
-            if (result.examples){
+            if (result.examples) {
                 delete result.examples;
             }
-            if (input.compassId){
+            if (input.compassId) {
                 delete result.compassId;
             }
             return result;
@@ -744,7 +804,7 @@ cxTags.provider('tagsInputConfig', function() {
         return this;
     };
 
-    this.$get = ["$interpolate", function($interpolate) {
+    this.$get = function($interpolate) {
         var converters = {};
         converters[String] = function(value) { return value; };
         converters[Number] = function(value) { return parseInt(value, 10); };
@@ -767,23 +827,23 @@ cxTags.provider('tagsInputConfig', function() {
                 });
             }
         };
-    }];
+    };
 });
 
 
 /* HTML templates */
-cxTags.run(["$templateCache", function($templateCache) {
+cxTags.run(function($templateCache) {
     $templateCache.put('cxTags/tags-input.html',
     "<div class=\"ngTagsInput ctx-tags\" tabindex=\"-1\" ng-class=\"options.customClass\" ti-transclude-append=\"\"><div class=\"tags\" ng-class=\"{focused: hasFocus}\"><ul class=\"tag-list\" ng-if=\"!hideTags\"><li class=\"tag-item\" ng-repeat=\"tag in tags\" ng-class=\"getCssClass($index)\"><span>{{tag.label}}</span> <button type=\"button\" ng-click=\"remove($index)\">{{options.removeTagSymbol}}</button></li></ul><input class=\"tag-input\" id=\"{{ id }}\" placeholder=\"{{options.placeholder}}\" maxlength=\"{{options.maxLength}}\" tabindex=\"{{options.tabindex}}\" ng-model=\"newTag\" ng-change=\"newTagChange()\" ti-autosize=\"\"></div></div>"
   );
 
   $templateCache.put('cxTags/auto-complete.html',
-    "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li id=\"suggestion-item-{{ $index }}\" class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items | limitTo:options.maxResultsToShow\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li class=\"tag-family\" data-ng-tag-highlight=\"{{ item.family }}\"></li><li class=\"tag-description\" ng-if=\"item.description && item.description.length > 0\">: <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li><li class=\"attributes\"><ul><li ng-repeat=\"(key, value) in item.attributes | filterAttributes \" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li></ul></li><li class=\"tag-examples\" ng-if=\"item.attributes && item.attributes.examples && (item.attributes.examples.length > 0)\"><span class=\"tag-attribute-key\">Examples</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.attributes.examples }}\"></span></li></ul></li></ul></div>"
+    "<div class=\"autocomplete\" ng-show=\"suggestionList.visible\"><ul class=\"suggestion-list\"><li id=\"suggestion-item-{{ $index }}\" class=\"suggestion-item\" ng-repeat=\"item in suggestionList.items\" ng-class=\"{selected: item == suggestionList.selected}\" ng-click=\"addSuggestion()\" ng-mouseenter=\"suggestionList.select($index)\"><ul><li class=\"tag-label\" data-ng-tag-highlight=\"{{ item.label }}\"></li><li class=\"tag-family\" data-ng-tag-highlight=\"{{ item.family }}\"></li><li class=\"tag-description\" ng-if=\"item.description && item.description.length > 0\">: <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.description }}\"></span></li><li class=\"attributes\"><ul><li ng-repeat=\"(key, value) in item.attributes | filterAttributes \" class=\"tag-attribute\"><span class=\"tag-attribute-key\">{{ key }}</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ value }}\"></span></li></ul></li><li class=\"tag-examples\" ng-if=\"item.attributes && item.attributes.examples && (item.attributes.examples.length > 0)\"><span class=\"tag-attribute-key\">Examples</span> <span class=\"tag-attribute-value\" data-ng-tag-highlight=\"{{ item.attributes.examples }}\"></span></li></ul></li></ul></div>"
   );
 
   $templateCache.put('cxTags/tag-list.html',
     "<span class=\"cx-tag-list\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList\"><span>{{tag.label}}</span> <button type=\"button\" data-ng-if=\"removeEnabled\" ng-click=\"remove($index)\">×</button></li></ul></span>"
   );
-}]);
+});
 
 }());

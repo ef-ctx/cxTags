@@ -421,17 +421,6 @@ describe('autocomplete-directive', function() {
                 expect(suggestionList.selected).toBe(mocks.tags[1]);
             });
 
-            it('selects the first suggestion when the down arrow key is pressed and the last item is selected', function() {
-                // Arrange
-                loadSuggestions([mocks.tags[0], mocks.tags[1]]);
-                suggestionList.select(1);
-
-                // Act
-                sendKeyDown(KEYS.down);
-
-                // Assert
-                expect(suggestionList.selected).toBe(mocks.tags[0]);
-            });
         });
 
         describe('upward', function() {
@@ -447,17 +436,6 @@ describe('autocomplete-directive', function() {
                 expect(suggestionList.selected).toBe(mocks.tags[0]);
             });
 
-            it('selects the last suggestion when the up arrow key is pressed and the first item is selected', function() {
-                // Arrange
-                loadSuggestions([mocks.tags[0], mocks.tags[1]]);
-                suggestionList.select(0);
-
-                // Act
-                sendKeyDown(KEYS.up);
-
-                // Assert
-                expect(suggestionList.selected).toBe(mocks.tags[1]);
-            });
         });
 
         describe('mouse', function() {
@@ -758,27 +736,6 @@ describe('autocomplete-directive', function() {
         });
     });
 
-    describe('max-results-to-show option', function() {
-        it('initializes the option to 10', function() {
-            // Arrange/Act
-            compile();
 
-            // Assert
-            expect(isolateScope.options.maxResultsToShow).toBe(10);
-        });
-
-        it('limits the number of results to be displayed at a time', function() {
-            // Arrange
-            compile('max-results-to-show="2"');
-
-            // Act
-            loadSuggestions([mocks.tags[0], mocks.tags[1], mocks.tags[2], mocks.tags[3]]);
-
-            // Assert
-            expect(getSuggestions().length).toBe(2);
-            expect(getSuggestionLabel(0)).toBe(mocks.tags[0].label);
-            expect(getSuggestionLabel(1)).toBe(mocks.tags[1].label);
-        });
-    });
 
 });
