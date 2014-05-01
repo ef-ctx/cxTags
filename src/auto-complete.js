@@ -1,4 +1,3 @@
-/*globals console: true*/
 'use strict';
 
 /**
@@ -101,22 +100,19 @@ cxTags.directive('autoComplete', [
                     });
                 }, options.debounceDelay, false);
             };
+
             self.selectNext = function() {
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
                 if (self.index < self.items.length - 1) {
                     self.select(++self.index);
                 }
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
             };
+
             self.selectPrior = function() {
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
                 if (self.index > 0) {
                     self.select(--self.index);
                 }
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
-
-                //self.scrollToTag(self.index);
             };
+
             self.select = function(index) {
                 self.index = index;
                 self.selected = self.items[index];
@@ -169,7 +165,6 @@ cxTags.directive('autoComplete', [
                                 }
                             }
 
-                            console.log('currentPosition : ', container.top);
                             angular.element(container.el).css('top', container.top + 'px');
 
                         },

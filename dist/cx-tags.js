@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-05-01 10:31:24 +0100
+ * Generated at 2014-05-01 11:13:32 +0100
  */
 (function() {
 'use strict';
@@ -113,7 +113,7 @@ cxTags.directive('tagsInput', [
             replace: false,
             transclude: true,
             templateUrl: 'cxTags/tags-input.html',
-            controller: function($scope, $attrs, $element) {
+            controller: ["$scope","$attrs","$element", function($scope, $attrs, $element) {
                 var shouldRemoveLastTag;
 
                 tagsInputConfig.load('tagsInput', $scope, $attrs, {
@@ -262,7 +262,7 @@ cxTags.directive('tagsInput', [
                         }
                     };
                 };
-            },
+            }],
             link: function(scope, element, attrs, ngModelCtrl) {
                 var hotkeys = [KEYS.enter, KEYS.comma, KEYS.space, KEYS.backspace];
                 var input = element.find('input');
@@ -378,7 +378,6 @@ cxTags.directive('cxTagList', [
 ]);
 
 
-/*globals console: true*/
 /**
  * @ngdoc directive
  * @name tagsInput.directive:autoComplete
@@ -478,22 +477,19 @@ cxTags.directive('autoComplete', [
                     });
                 }, options.debounceDelay, false);
             };
+
             self.selectNext = function() {
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
                 if (self.index < self.items.length - 1) {
                     self.select(++self.index);
                 }
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
             };
+
             self.selectPrior = function() {
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
                 if (self.index > 0) {
                     self.select(--self.index);
                 }
-                console.log('(0) -- (' + self.index + ') -- (' + self.items.length + ')');
-
-                //self.scrollToTag(self.index);
             };
+
             self.select = function(index) {
                 self.index = index;
                 self.selected = self.items[index];
@@ -546,7 +542,6 @@ cxTags.directive('autoComplete', [
                                 }
                             }
 
-                            console.log('currentPosition : ', container.top);
                             angular.element(container.el).css('top', container.top + 'px');
 
                         },
@@ -804,7 +799,7 @@ cxTags.provider('tagsInputConfig', function() {
         return this;
     };
 
-    this.$get = function($interpolate) {
+    this.$get = ["$interpolate", function($interpolate) {
         var converters = {};
         converters[String] = function(value) { return value; };
         converters[Number] = function(value) { return parseInt(value, 10); };
@@ -827,12 +822,12 @@ cxTags.provider('tagsInputConfig', function() {
                 });
             }
         };
-    };
+    }];
 });
 
 
 /* HTML templates */
-cxTags.run(function($templateCache) {
+cxTags.run(["$templateCache", function($templateCache) {
     $templateCache.put('cxTags/tags-input.html',
     "<div class=\"ngTagsInput ctx-tags\" tabindex=\"-1\" ng-class=\"options.customClass\" ti-transclude-append=\"\"><div class=\"tags\" ng-class=\"{focused: hasFocus}\"><ul class=\"tag-list\" ng-if=\"!hideTags\"><li class=\"tag-item\" ng-repeat=\"tag in tags\" ng-class=\"getCssClass($index)\"><span>{{tag.label}}</span> <button type=\"button\" ng-click=\"remove($index)\">{{options.removeTagSymbol}}</button></li></ul><input class=\"tag-input\" id=\"{{ id }}\" placeholder=\"{{options.placeholder}}\" maxlength=\"{{options.maxLength}}\" tabindex=\"{{options.tabindex}}\" ng-model=\"newTag\" ng-change=\"newTagChange()\" ti-autosize=\"\"></div></div>"
   );
@@ -844,6 +839,6 @@ cxTags.run(function($templateCache) {
   $templateCache.put('cxTags/tag-list.html',
     "<span class=\"cx-tag-list\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList\"><span>{{tag.label}}</span> <button type=\"button\" data-ng-if=\"removeEnabled\" ng-click=\"remove($index)\">×</button></li></ul></span>"
   );
-});
+}]);
 
 }());
