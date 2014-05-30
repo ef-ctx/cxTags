@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-05-30 15:51:52 +0100
+ * Generated at 2014-05-30 16:11:09 +0100
  */
 (function() {
 'use strict';
@@ -862,7 +862,7 @@ cxTags.run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put('cxTags/tag-list.html',
-    "<span class=\"cx-tag-list\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList\"><span>{{tag.label}}</span> <button type=\"button\" data-ng-if=\"removeEnabled\" ng-click=\"remove($index)\">×</button></li></ul></span>"
+    "<span class=\"cx-tag-list\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList\" ng-class=\"{locked: tag.locked}\"><span>{{tag.label}}</span> <button type=\"button\" data-ng-if=\"removeEnabled && !tag.locked\" ng-click=\"remove($index)\">×</button></li></ul></span>"
   );
 }]);
 

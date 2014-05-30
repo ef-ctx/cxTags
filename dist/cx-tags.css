@@ -45,7 +45,12 @@
     overflow: visible;
     list-style-type: none;
 }
-
+.tag-list .tag-item.locked {
+    background-color: #ddd;
+    padding-right: 9px;
+    padding-top: 2px;
+    color: #666;
+}
 .ngTagsInput .tags .tag-item,
 .cx-tag-list .tag-list .tag-item
 {
