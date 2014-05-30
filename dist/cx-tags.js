@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-05-01 11:13:32 +0100
+ * Generated at 2014-05-30 15:51:52 +0100
  */
 (function() {
 'use strict';
@@ -59,7 +59,6 @@ cxTags.constant('EVENT', {
  * @param {boolean=} [addOnSpace=false] Flag indicating that a new tag will be added on pressing the SPACE key.
  * @param {boolean=} [addOnComma=true] Flag indicating that a new tag will be added on pressing the COMMA key.
  * @param {boolean=} [addOnBlur=true] Flag indicating that a new tag will be added when the input field loses focus.
- * @param {boolean=} [replaceSpacesWithDashes=true] Flag indicating that spaces will be replaced with dashes.
  * @param {string=} [allowedTagsPattern=^[a-zA-Z0-9\s]+$*] Regular expression that determines whether a new tag is valid.
  * @param {boolean=} [enableEditingLastTag=false] Flag indicating that the last tag will be moved back into
  *                                                the new tag input box instead of being removed when the backspace key
@@ -76,6 +75,12 @@ cxTags.directive('tagsInput', [
     'EVENT',
 
     function($document, $rootScope, $timeout, tagsInputConfig, EVENT) {
+
+        /************************************************************************************************************************
+         * 
+         * Creates a simple pubsub in order to add handlers from outer scope 
+         *
+         ***********************************************************************************************************************/
         function SimplePubSub(messagingNamespace) {
             var events = {};
 
@@ -121,7 +126,6 @@ cxTags.directive('tagsInput', [
                     placeholder: [String, 'Add a tag'],
                     tabindex: [Number],
                     removeTagSymbol: [String, String.fromCharCode(215)],
-                    replaceSpacesWithDashes: [Boolean, false],
                     minLength: [Number, 3],
                     maxLength: [Number],
                     addOnEnter: [Boolean, true],
@@ -137,41 +141,53 @@ cxTags.directive('tagsInput', [
                 $scope.newTag = '';
                 $scope.tags = $scope.tags || [];
                 
+                //*** EVENT HANDLING *****************************************************************************************************
                 $scope.events = new SimplePubSub($scope.messagingNamespace);
                 $scope.events.on(EVENT.tagAdded, $scope.onTagAdded);
                 $scope.events.on(EVENT.tagRemoved, $scope.onTagRemoved);
+                
+                // if messagingNamespace has a value it means that the component will send and recieve messages from the rootScope,
+                // this happens when for instance a tagList component has being configured to show and trigger 'delete' tags from 
+                // the tag list which is inside of a cxTag component with the same namespace.
+                if ($scope.messagingNamespace) {
+                    $rootScope.$on($scope.messagingNamespace + '.' + EVENT.removeTag, function (event, index){
+                        $scope.remove(index);
+                    });
 
+                    $rootScope.$on($scope.messagingNamespace + '.' + EVENT.getTags, function (){
+                        $scope.events.trigger(EVENT.tagAdded, {$tags:$scope.tags});
+                    });
+                }
+
+                /*** tryAdd *************************************************************************************************************
+                 *
+                 *  Adds a new tag after checking if it is valid or not 
+                 *
+                 ***********************************************************************************************************************/
                 $scope.tryAdd = function() {
-                    var changed = false;
-                    var tag = $scope.newTag;
+                    var changed = false,
+                        tag = $scope.newTag,
+                        isValidTag = (tag) && (tag.label) && (angular.isString(tag.label)) && (tag.label.length >= $scope.options.minLength) && ($scope.options.allowedTagsPattern.test(tag.label));
 
-                    if ((tag) &&
-                        (tag.label) &&
-                        (angular.isString(tag.label)) &&
-                        (tag.label.length >= $scope.options.minLength) &&
-                        ($scope.options.allowedTagsPattern.test(tag.label))
-                    ) {
-
-                        if ($scope.options.replaceSpacesWithDashes) {
-                            tag.label = tag.label.replace(/\s/g, '-');
-                        }
-
+                    if (isValidTag) {
                         if ($scope.tags.indexOf(tag) === -1) {
                             $scope.tags.push(tag);
-
-                            $scope.events.trigger(EVENT.tagAdded, {
-                                $tag: tag,
-                                $tags: $scope.tags
-                            });
+                            $scope.events.trigger(EVENT.tagAdded, {$tag: tag, $tags: $scope.tags});
                         }
 
                         $scope.newTag = null;
                         $scope.events.trigger(EVENT.inputChange, '');
                         changed = true;
                     }
+
                     return changed;
                 };
 
+                /*** tryRemoveLast ******************************************************************************************************
+                 * 
+                 * Check if the tag can be removed from the list
+                 *
+                 ***********************************************************************************************************************/
                 $scope.tryRemoveLast = function() {
                     var changed = false;
 
@@ -192,6 +208,9 @@ cxTags.directive('tagsInput', [
                     return changed;
                 };
 
+                /*** remove *************************************************************************************************************
+                 * Removes a tag from the list
+                 ***********************************************************************************************************************/
                 $scope.remove = function(index) {
                     var removedTag = $scope.tags.splice(index, 1)[0];
                     $scope.events.trigger(EVENT.tagRemoved, {
@@ -200,30 +219,38 @@ cxTags.directive('tagsInput', [
                     });
                     return removedTag;
                 };
-
-                $rootScope.$on($scope.messagingNamespace + '.' + EVENT.removeTag, function (event, index){
-                    $scope.remove(index);
-                });
-
-                $rootScope.$on($scope.messagingNamespace + '.' + EVENT.getTags, function (){
-                    $scope.events.trigger(EVENT.tagAdded, {$tags:$scope.tags});
-                });
                
-                $scope.getCssClass = function(index) {
-                    var isLastTag = index === $scope.tags.length - 1;
-                    return shouldRemoveLastTag && isLastTag ? 'selected' : '';
-                };
-
+                // Watches changes on new tag and sets shouldRemoveLastTag to false everytime newTag is setted or cleared
                 $scope.$watch(function() {
                     return (($scope.newTag) && ($scope.newTag.label) && ($scope.newTag.label.length > 0));
                 }, function() {
                     shouldRemoveLastTag = false;
                 });
+
+                /*** getCssClass ********************************************************************************************************
+                 * 
+                 * Handles style changes on the last tag
+                 *
+                 ***********************************************************************************************************************/
+                $scope.getCssClass = function(index) {
+                    var isLastTag = index === $scope.tags.length - 1;
+                    return shouldRemoveLastTag && isLastTag ? 'selected' : '';
+                };
                 
+                /*** getInputValue ******************************************************************************************************
+                 * 
+                 * Returns the value typed in the input value. It is called from the highlight directive
+                 *
+                 ***********************************************************************************************************************/
                 this.getInputValue = function () {
                     return $scope.newTag;
                 };
 
+                /*** registerAutocomplete ***********************************************************************************************
+                 *
+                 * Wire the autocomplete component to the cxTags providing an API to the autocomplete directive
+                 *
+                 ***********************************************************************************************************************/
                 this.registerAutocomplete = function() {
                     var input = $element.find('input');
                     input.on('keydown', function(e) {
@@ -741,13 +768,11 @@ cxTags.directive('tiAutosize', function() {
 
 
 /*globals console: true*/
-/*
- * @ngdoc service
- * @name tagsInput.service:highlight
+/*** data-ng-tag-highlight ***********************************************************************************************
  *
- * @description
  * Provides highlight for matched text inside tag attributes
- * */
+ *
+ ***********************************************************************************************************************/
 cxTags.directive('ngTagHighlight', [
     function() {
 
