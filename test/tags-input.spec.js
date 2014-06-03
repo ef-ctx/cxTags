@@ -128,7 +128,7 @@ describe('tags-input-directive', function() {
             $scope.newTag = mock.$tag;
             $scope.tryAdd();
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(events.tagAdded, mock);
+            expect($rootScope.$broadcast).toHaveBeenCalledWith(messagingNamespace, mock);
 
         });
 
@@ -140,7 +140,7 @@ describe('tags-input-directive', function() {
             $scope.tryAdd();
             $scope.remove(0);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(events.tagRemoved,
+            expect($rootScope.$broadcast).toHaveBeenCalledWith(messagingNamespace,
                 {   $tag : mock.$tag,
                     $tags : [ ]
                 }

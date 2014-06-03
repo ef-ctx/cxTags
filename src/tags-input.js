@@ -56,7 +56,7 @@ cxTags.directive('tagsInput', [
                 trigger: function(name, args) {
                     if (name && name.length > 0) {
                         if (messagingNamespace && messagingNamespace.length > 0) {
-                            $rootScope.$broadcast(messagingNamespace + '.' + name, args);
+                            $rootScope.$broadcast(messagingNamespace, args);
                         }
 
                         angular.forEach(events[name], function(handler) {
@@ -108,6 +108,9 @@ cxTags.directive('tagsInput', [
                 $scope.events.on(EVENT.tagAdded, $scope.onTagAdded);
                 $scope.events.on(EVENT.tagRemoved, $scope.onTagRemoved);
                 
+                $scope.$watch('tags', function () {
+                    $rootScope.$broadcast($scope.messagingNamespace, {$tags:$scope.tags});
+                });
                 // if messagingNamespace has a value it means that the component will send and recieve messages from the rootScope,
                 // this happens when for instance a tagList component has being configured to show and trigger 'delete' tags from 
                 // the tag list which is inside of a cxTag component with the same namespace.

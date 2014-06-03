@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-05-30 16:11:09 +0100
+ * Generated at 2014-06-03 15:50:51 +0100
  */
 (function() {
 'use strict';
@@ -94,7 +94,7 @@ cxTags.directive('tagsInput', [
                 trigger: function(name, args) {
                     if (name && name.length > 0) {
                         if (messagingNamespace && messagingNamespace.length > 0) {
-                            $rootScope.$broadcast(messagingNamespace + '.' + name, args);
+                            $rootScope.$broadcast(messagingNamespace, args);
                         }
 
                         angular.forEach(events[name], function(handler) {
@@ -146,6 +146,9 @@ cxTags.directive('tagsInput', [
                 $scope.events.on(EVENT.tagAdded, $scope.onTagAdded);
                 $scope.events.on(EVENT.tagRemoved, $scope.onTagRemoved);
                 
+                $scope.$watch('tags', function () {
+                    $rootScope.$broadcast($scope.messagingNamespace, {$tags:$scope.tags});
+                });
                 // if messagingNamespace has a value it means that the component will send and recieve messages from the rootScope,
                 // this happens when for instance a tagList component has being configured to show and trigger 'delete' tags from 
                 // the tag list which is inside of a cxTag component with the same namespace.
@@ -370,7 +373,9 @@ cxTags.directive('cxTagList', [
         
         var linkFn = function($scope, element, attrs) {
                 var tagsChangedHandler = function (event, target) {
-                    $scope.tagList = target.$tags;
+                    if (target && target.hasOwnProperty('$tags')){
+                        $scope.tagList = target.$tags;
+                    }
                 };
                 
                 if ($scope.tags) {
@@ -382,8 +387,7 @@ cxTags.directive('cxTagList', [
                             $rootScope.$broadcast($scope.messagingNamespace + '.' + EVENT.getTags);
                         }, 50);
 
-                    $rootScope.$on($scope.messagingNamespace + '.' + EVENT.tagAdded, tagsChangedHandler );
-                    $rootScope.$on($scope.messagingNamespace + '.' + EVENT.tagRemoved, tagsChangedHandler );
+                    $rootScope.$on($scope.messagingNamespace, tagsChangedHandler );
                 }
 
                 $scope.remove = function (index) {

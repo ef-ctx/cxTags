@@ -9,7 +9,9 @@ cxTags.directive('cxTagList', [
         
         var linkFn = function($scope, element, attrs) {
                 var tagsChangedHandler = function (event, target) {
-                    $scope.tagList = target.$tags;
+                    if (target && target.hasOwnProperty('$tags')){
+                        $scope.tagList = target.$tags;
+                    }
                 };
                 
                 if ($scope.tags) {
@@ -21,8 +23,7 @@ cxTags.directive('cxTagList', [
                             $rootScope.$broadcast($scope.messagingNamespace + '.' + EVENT.getTags);
                         }, 50);
 
-                    $rootScope.$on($scope.messagingNamespace + '.' + EVENT.tagAdded, tagsChangedHandler );
-                    $rootScope.$on($scope.messagingNamespace + '.' + EVENT.tagRemoved, tagsChangedHandler );
+                    $rootScope.$on($scope.messagingNamespace, tagsChangedHandler );
                 }
 
                 $scope.remove = function (index) {
