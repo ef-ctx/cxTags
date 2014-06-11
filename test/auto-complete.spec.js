@@ -103,6 +103,9 @@ describe('autocomplete-directive', function() {
             $timeout = _$timeout_;
         });
 
+        //initialization for tags
+        $scope.tags = [];
+       
         deferred = $q.defer();
         eventHandlers = {};
         $scope.loadItems = jasmine.createSpy().andReturn(deferred.promise);
@@ -124,7 +127,7 @@ describe('autocomplete-directive', function() {
             getTags: jasmine.createSpy().andReturn([])
         };
 
-        parent = $compile('<span data-tags-input ng-model="whatever"></span>')($scope);
+        parent = $compile('<span data-tags-input ng-model="tags"></span>')($scope);
         $scope.$digest();
 
         parentCtrl = parent.controller('tagsInput');

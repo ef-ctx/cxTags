@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-06-03 15:50:51 +0100
+ * Generated at 2014-06-11 15:49:06 +0100
  */
 (function() {
 'use strict';
@@ -69,12 +69,13 @@ cxTags.constant('EVENT', {
 
 cxTags.directive('tagsInput', [
     '$document',
+    '$exceptionHandler',
     '$rootScope',
     '$timeout',
     'tagsInputConfig',
     'EVENT',
 
-    function($document, $rootScope, $timeout, tagsInputConfig, EVENT) {
+    function($document, $exceptionHandler, $rootScope, $timeout, tagsInputConfig, EVENT) {
 
         /************************************************************************************************************************
          * 
@@ -139,7 +140,12 @@ cxTags.directive('tagsInput', [
                 });
 
                 $scope.newTag = '';
-                $scope.tags = $scope.tags || [];
+                
+                if(!angular.isArray($scope.tags)) {
+                    $exceptionHandler(new Error('tagsInput directive: directive should be initialized with an array'));
+                }
+
+                $scope.tags = $scope.tags ;
                 
                 //*** EVENT HANDLING *****************************************************************************************************
                 $scope.events = new SimplePubSub($scope.messagingNamespace);
@@ -148,6 +154,7 @@ cxTags.directive('tagsInput', [
                 
                 $scope.$watch('tags', function () {
                     $rootScope.$broadcast($scope.messagingNamespace, {$tags:$scope.tags});
+                    
                 });
                 // if messagingNamespace has a value it means that the component will send and recieve messages from the rootScope,
                 // this happens when for instance a tagList component has being configured to show and trigger 'delete' tags from 
@@ -173,6 +180,7 @@ cxTags.directive('tagsInput', [
                         isValidTag = (tag) && (tag.label) && (angular.isString(tag.label)) && (tag.label.length >= $scope.options.minLength) && ($scope.options.allowedTagsPattern.test(tag.label));
 
                     if (isValidTag) {
+                        
                         if ($scope.tags.indexOf(tag) === -1) {
                             $scope.tags.push(tag);
                             $scope.events.trigger(EVENT.tagAdded, {$tag: tag, $tags: $scope.tags});

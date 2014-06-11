@@ -2,31 +2,41 @@
 'use strict';
 
 describe('tags-input-directive', function() {
-    var $compile, $rootScope, $timeout, $document,
+    var $compile, $exceptionHandler, $rootScope, $timeout, $document,
         $scope, element, ngTagsEvents,
         mocks = {
-            $tags: [
-                { label: 'first tag' },
-                { label: 'second tag' },
-                { label: 'third tag' },
-                { label: 'fourth tag' },
-                { label: 'fifth tag' },
-                { label: 'sixth tag' }
-            ]
+            $tags: [{
+                label: 'first tag'
+            }, {
+                label: 'second tag'
+            }, {
+                label: 'third tag'
+            }, {
+                label: 'fourth tag'
+            }, {
+                label: 'fifth tag'
+            }, {
+                label: 'sixth tag'
+            }]
         };
-        
+
 
     beforeEach(function() {
         module('cxTags');
 
-        inject(function(_$compile_, _$rootScope_, _$document_, _$timeout_, EVENT) {
+        inject(function(_$compile_, _$exceptionHandler_, _$rootScope_, _$document_, _$timeout_, EVENT) {
             $compile = _$compile_;
+            $exceptionHandler = _$exceptionHandler_;
             $rootScope = _$rootScope_;
             $document = _$document_;
             $timeout = _$timeout_;
             ngTagsEvents = EVENT;
         });
+
+        //initialization for tags
+        $rootScope.tags = [];
     });
+
 
     function compile() {
         var options = jQuery.makeArray(arguments).join(' ');
@@ -108,9 +118,9 @@ describe('tags-input-directive', function() {
     describe('messaging-namespace option', function() {
 
         var mock = {
-                $tag: mocks.$tags[0],
-                $tags: [mocks.$tags[0]]
-            },
+            $tag: mocks.$tags[0],
+            $tags: [mocks.$tags[0]]
+        },
             messagingNamespace = 'abracadabra',
             events;
 
@@ -140,11 +150,10 @@ describe('tags-input-directive', function() {
             $scope.tryAdd();
             $scope.remove(0);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(messagingNamespace,
-                {   $tag : mock.$tag,
-                    $tags : [ ]
-                }
-           );
+            expect($rootScope.$broadcast).toHaveBeenCalledWith(messagingNamespace, {
+                $tag: mock.$tag,
+                $tags: []
+            });
         });
 
 
@@ -163,7 +172,16 @@ describe('tags-input-directive', function() {
     describe('basic features', function() {
         it('renders the correct number of tags', function() {
             // Arrange
-            $rootScope.tags = [{id:0, label:'some'},{id:1, label:'cool'},{id:2, label:'tags'}];
+            $rootScope.tags = [{
+                id: 0,
+                label: 'some'
+            }, {
+                id: 1,
+                label: 'cool'
+            }, {
+                id: 2,
+                label: 'tags'
+            }];
 
             // Act
             compile();
@@ -177,7 +195,7 @@ describe('tags-input-directive', function() {
 
         it('removes a tag when the remove button is clicked', function() {
             // Arrange
-            $rootScope.tags = ['some','cool','tags'];
+            $rootScope.tags = ['some', 'cool', 'tags'];
             compile();
 
             // Act
@@ -349,7 +367,7 @@ describe('tags-input-directive', function() {
 
     describe('enable-editing-last-tag option', function() {
         beforeEach(function() {
-            $rootScope.tags = ['some','cool','tags'];
+            $rootScope.tags = ['some', 'cool', 'tags'];
         });
 
         it('initializes the option to false', function() {
@@ -372,7 +390,7 @@ describe('tags-input-directive', function() {
 
                     // Assert
                     expect(getInput().val()).toBe('tags');
-                    expect($rootScope.tags).toEqual(['some','cool']);
+                    expect($rootScope.tags).toEqual(['some', 'cool']);
                 });
 
                 it('does nothing when the input field is not empty', function() {
@@ -381,7 +399,7 @@ describe('tags-input-directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect($rootScope.tags).toEqual(['some','cool','tags']);
+                    expect($rootScope.tags).toEqual(['some', 'cool', 'tags']);
                 });
             });
         });
@@ -406,7 +424,7 @@ describe('tags-input-directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect($rootScope.tags).toEqual(['some','cool','tags']);
+                    expect($rootScope.tags).toEqual(['some', 'cool', 'tags']);
                 });
 
                 it('stops highlighting the last tag when the input box becomes non-empty', function() {
@@ -427,7 +445,7 @@ describe('tags-input-directive', function() {
 
                     // Assert
                     expect(getInput().val()).toBe('');
-                    expect($rootScope.tags).toEqual(['some','cool']);
+                    expect($rootScope.tags).toEqual(['some', 'cool']);
                 });
 
                 it('does nothing when the input field is not empty', function() {
@@ -437,7 +455,7 @@ describe('tags-input-directive', function() {
                     sendBackspace();
 
                     // Assert
-                    expect($rootScope.tags).toEqual(['some','cool','tags']);
+                    expect($rootScope.tags).toEqual(['some', 'cool', 'tags']);
                 });
             });
         });
@@ -542,10 +560,10 @@ describe('tags-input-directive', function() {
         });
     });
 
-    describe('on-tag-removed option', function () {
+    describe('on-tag-removed option', function() {
         it('calls the provided callback when a tag is removed by clicking the remove button', function() {
             // Arrange
-            $rootScope.tags = ['some','cool','tags'];
+            $rootScope.tags = ['some', 'cool', 'tags'];
             $rootScope.callback = jasmine.createSpy();
             compile('on-tag-removed="callback($tag)"');
 
@@ -558,7 +576,7 @@ describe('tags-input-directive', function() {
 
         it('calls the provided callback when the last tag is removed by pressing backspace twice', function() {
             // Arrange
-            $rootScope.tags = ['some','cool','tags'];
+            $rootScope.tags = ['some', 'cool', 'tags'];
             $rootScope.callback = jasmine.createSpy();
             compile('on-tag-removed="callback($tag)"');
 
@@ -667,25 +685,33 @@ describe('tags-input-directive', function() {
 
             it('does not prevent any hotkey from being propagated when the shift key is down', function() {
                 angular.forEach(hotkeys, function(key) {
-                    expect(sendKeyDown(key, { shiftKey: true }).isDefaultPrevented()).toBe(false);
+                    expect(sendKeyDown(key, {
+                        shiftKey: true
+                    }).isDefaultPrevented()).toBe(false);
                 });
             });
 
             it('does not prevent any hotkey from being propagated when the alt key is down', function() {
                 angular.forEach(hotkeys, function(key) {
-                    expect(sendKeyDown(key, { altKey: true }).isDefaultPrevented()).toBe(false);
+                    expect(sendKeyDown(key, {
+                        altKey: true
+                    }).isDefaultPrevented()).toBe(false);
                 });
             });
 
             it('does not prevent any hotkey from being propagated when the ctrl key is down', function() {
                 angular.forEach(hotkeys, function(key) {
-                    expect(sendKeyDown(key, { ctrlKey: true }).isDefaultPrevented()).toBe(false);
+                    expect(sendKeyDown(key, {
+                        ctrlKey: true
+                    }).isDefaultPrevented()).toBe(false);
                 });
             });
 
             it('does not prevent any hotkey from being propagated when the meta key is down', function() {
                 angular.forEach(hotkeys, function(key) {
-                    expect(sendKeyDown(key, { metaKey: true }).isDefaultPrevented()).toBe(false);
+                    expect(sendKeyDown(key, {
+                        metaKey: true
+                    }).isDefaultPrevented()).toBe(false);
                 });
             });
 
@@ -709,11 +735,22 @@ describe('tags-input-directive', function() {
 
             it('prevents the backspace key from being propagated when all modifiers are up', function() {
                 // Arrange
-                $scope.tryRemoveLast = function() { return true; };
+                $scope.tryRemoveLast = function() {
+                    return true;
+                };
 
                 // Act/Assert
                 expect(sendKeyDown(KEYS.backspace).isDefaultPrevented()).toBe(true);
             });
         });
     });
+
+
+    describe('tags', function() {
+        it('should throw an error if they are NOT passed as an array event if it`s empty', function() {
+            $rootScope.tags = null;
+            expect(function() { compile(); }).toThrow('tagsInput directive: directive should be initialized with an array');
+        });
+    });
+
 });
