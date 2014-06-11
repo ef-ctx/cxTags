@@ -124,7 +124,6 @@ cxTags.directive('tagsInput', [
                     });
                 }
 
-
                 /*** tryAdd *************************************************************************************************************
                  *
                  *  Adds a new tag after checking if it is valid or not 
