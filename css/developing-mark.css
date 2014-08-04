@@ -1,12 +1,17 @@
 body:before {
-    content: 'ctx-ng-tags';
-    background-color: rgba(190, 190, 190, 0.3);
+    content: 'cx-tags';
+    background-color: #990000;
     padding: 5px 15px;
-    top: 19px;
-    left: 18px;
+    top: -13px;
+    right: -46px;
     position: absolute;
     z-index: 1000000;
-    border-radius: 40px;
-    color: #ccc;
+    color: #fff;
     border: 2px solid #888;
+    transform: rotate(45deg);
+    padding-top: 34px;
+    width: 131px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
 }
