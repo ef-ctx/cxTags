@@ -11,3 +11,9 @@ cxTags.constant('EVENT', {
     inputFocus: 'input-focus',
     inputClick: 'input-click'
 });
+
+cxTags.constant('DEFAULT_VALUES', {
+    tagMinLength: 2,
+    isDropdown: false,
+    placeholder: 'Add a tag'
+});

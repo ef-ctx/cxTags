@@ -39,8 +39,10 @@ describe('tags-input-directive', function() {
 
 
     function compile() {
+
+
         var options = jQuery.makeArray(arguments).join(' ');
-        var template = '<span data-tags-input ng-model="tags" ' + options + '></span>';
+        var template = '<span data-tags-input ng-model="tags" ' + options + ' ></span>';
 
         element = $compile(template)($rootScope);
         $rootScope.$digest();
@@ -115,6 +117,8 @@ describe('tags-input-directive', function() {
         }
     }
 
+
+
     describe('messaging-namespace option', function() {
 
         var mock = {
@@ -159,6 +163,45 @@ describe('tags-input-directive', function() {
 
     });
 
+    describe('maxTags option', function() {
+        it('should not allow inserting more tags than setted in maxTags option', function() {
+            compile('data-max-tags="2"');
+            $scope.newTag = mocks.$tags[0];
+            $scope.tryAdd();
+            $scope.newTag = mocks.$tags[1];
+            $scope.tryAdd();
+            $scope.newTag = mocks.$tags[2];
+            $scope.tryAdd();
+
+            expect($scope.tags).toEqual([{
+                label: 'first tag'
+            }, {
+                label: 'second tag'
+            }]);
+        });
+    });
+
+    describe('isDropdown option', function() {
+        it('when adding a tag with another tag selected , the last one should replace the existing one', function() {
+            compile('data-is-dropdown="true"');
+            $scope.newTag = mocks.$tags[0];
+            $scope.tryAdd();
+            $scope.newTag = mocks.$tags[1];
+            $scope.tryAdd();
+
+            expect($scope.tags).toEqual([{
+                label: 'second tag'
+            }]);
+
+            $scope.newTag = mocks.$tags[0];
+            $scope.tryAdd();
+
+            expect($scope.tags).toEqual([{
+                label: 'first tag'
+            }]);
+
+        });
+    });
 
     describe('hideTags option', function() {
         it('should NOT RENDER tags when hideTags option is true', function() {
@@ -320,9 +363,14 @@ describe('tags-input-directive', function() {
         it('initializes the option to "Add a tag"', function() {
             // Arrange/Act
             compile();
-
             // Assert
             expect($scope.options.placeholder).toBe('Add a tag');
+        });
+
+        it('should overrride the placeholder with the given with the directive', function() {
+            compile('placeholder="customPlaceholder"');
+            // Asser
+            expect(getInput().attr('placeholder')).toBe('customPlaceholder');
         });
     });
 

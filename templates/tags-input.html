@@ -1,12 +1,19 @@
-<div class="ngTagsInput ctx-tags" tabindex="-1" ng-class="options.customClass" ti-transclude-append>
+<div class="ngTagsInput ctx-tags {{options.customClass}}" tabindex="-1" data-ng-class="{dropdown: isDropdown}" ti-transclude-append>
   <div class="tags" ng-class="{focused: hasFocus}">
     <ul class="tag-list" ng-if="!hideTags">
       <li class="tag-item" ng-repeat="tag in tags" ng-class="getCssClass($index)">
         <span>{{tag.label}}</span>
-        <button type="button" ng-click="remove($index)">{{options.removeTagSymbol}}</button>
+        <button type="button" ng-click="remove($index)" data-ng-if="!isDropdown">{{options.removeTagSymbol}}</button>
+      </li>
+      <li class="tag-item" data-ng-if="isDropdown && (tags.length < 1)">
+        <span>{{ options.placeholder}}</span>
       </li>
     </ul>
-    <input type="text" class="tag-input" id="{{ id }}"
+    <i data-ng-if="isDropdown" class="fa fa-caret-down"></i>
+    <input type="text" 
+           id="{{ id }}"
+           class="tag-input" 
+           data-ng-show="!isDropdown" 
            name="ngTagsTextInput"
            placeholder="{{options.placeholder}}"
            maxlength="{{options.maxLength}}"

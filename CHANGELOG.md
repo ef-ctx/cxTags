@@ -1,5 +1,17 @@
 ### v1.1.1 (2014-08-04)
 
+#### Bug Fixes
+
+* **pattern:** / and : were not allowed ([73fac05a](http://github.com/ef-ctx/cxTags/commit/73fac05af25b92298dbd00055f8426eb265ced76))
+
+### v1.1.1 (2014-08-04)
+
+#### Bug Fixes
+
+* **pattern:** / and : were not allowed ([73fac05a](http://github.com/ef-ctx/cxTags/commit/73fac05af25b92298dbd00055f8426eb265ced76))
+
+### v1.1.1 (2014-08-04)
+
 ### v1.1.1 (2014-08-04)
 
 ### v1.1.1 (2014-08-04)

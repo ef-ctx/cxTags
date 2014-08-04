@@ -1,4 +1,6 @@
-.ngTagsInput *, *:before, *:after {
+.ngTagsInput *,
+.ngTagsInput *:before,
+.ngTagsInput *:after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -6,11 +8,9 @@
 .ngTagsInput {
     position: relative;
 }
-
 .ngTagsInput:active {
     outline: none;
 }
-
 .ngTagsInput .tags {
     -moz-appearance: textfield;
     -webkit-appearance: textfield;
@@ -30,16 +30,7 @@
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
-
-.ngTagsInput .tags.focused {
-    outline: none;
-    -webkit-box-shadow: 0px 0px 3px 1px rgba(5,139,242,0.6);
-    -moz-box-shadow: 0px 0px 3px 1px rgba(5,139,242,0.6);
-    box-shadow: 0px 0px 3px 1px rgba(5,139,242,0.6);
-}
-
-.ngTagsInput .tags .tag-list
-{
+.ngTagsInput .tags .tag-list {
     margin: 0px;
     padding: 0px;
     overflow: visible;
@@ -52,8 +43,7 @@
     color: #666;
 }
 .ngTagsInput .tags .tag-item,
-.cx-tag-list .tag-list .tag-item
-{
+.cx-tag-list .tag-list .tag-item {
     margin: 2px;
     padding-left: 4px;
     display: inline-block;
@@ -65,23 +55,16 @@
     color: #fff;
     background: #453b34;
 }
-
 .ngTagsInput .tags .tag-item.selected,
-.cx-tag-list .tag-list .tag-item.selected
-{
+.cx-tag-list .tag-list .tag-item.selected {
     background: #900;
 }
-
 .ngTagsInput .tags .tag-item span,
-.cx-tag-list .tag-list .tag-item span
-{
-    font: 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+.cx-tag-list .tag-list .tag-item span {
+    font: 13px"Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
 .ngTagsInput .tags .tag-item button,
-.cx-tag-list .tag-list .tag-item button
-
-{
+.cx-tag-list .tag-list .tag-item button {
     margin: 0px;
     border: none;
     background: none;
@@ -90,12 +73,9 @@
     font: bold 16px Arial, sans-serif;
     vertical-align: middle;
 }
-
-.ngTagsInput .tags .tag-item button:active
-{
+.ngTagsInput .tags .tag-item button:active {
     color: #ff0000;
 }
-
 .ngTagsInput .tags .tag-input {
     min-width: 100px;
     border: 0px;
@@ -104,10 +84,23 @@
     padding: 0px 0px 0px 4px;
     height: 21px;
     float: left;
-    font: 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 13px"Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #000;
 }
-
 .ngTagsInput .tags input::-ms-clear {
     display: none;
+}
+.ngTagsInput.dropdown .tags{
+    cursor: pointer;
+} 
+
+.ngTagsInput.dropdown i {
+    float: right;
+    margin: 6px 12px 0 0;
+    color: #999;
+}
+.ngTagsInput.dropdown .tags .tag-item {
+    background: none;
+    border: none;
+    color: #666;
 }
