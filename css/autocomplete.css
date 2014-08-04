@@ -112,3 +112,9 @@
     background-color: #d0ead7;
     border-radius: 4px;
 }
+.ngTagsInput .autocomplete .suggestion-item.selected .tag-label {
+    color: #fff;
+}
+.ngTagsInput .autocomplete .suggestion-item.selected .tag-family {
+    color: #fff;
+}
