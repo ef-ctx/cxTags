@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-06-27 16:54:34 +0100
+ * Generated at 2014-08-04 10:38:52 +0100
  */
 (function() {
 'use strict';
@@ -114,7 +114,8 @@ cxTags.directive('tagsInput', [
                 onTagAdded: '&',
                 onTagRemoved: '&',
                 messagingNamespace: '@',
-                hideTags: '='
+                hideTags: '=',
+                tagMinLength : '@'
             },
             replace: false,
             transclude: true,
@@ -133,11 +134,14 @@ cxTags.directive('tagsInput', [
                     addOnSpace: [Boolean, false],
                     addOnComma: [Boolean, true],
                     addOnBlur: [Boolean, true],
-                    allowedTagsPattern: [RegExp, /^[\-\_\sa-zA-Z0-9]+$/],
+                    allowedTagsPattern: [RegExp, /^[\-\_\s\:\/a-zA-Z0-9]+$/],
                     enableEditingLastTag: [Boolean, false],
                     minTags: [Number],
                     maxTags: [Number]
                 });
+                
+                //@todo: double check how to pass minLength this is a bit ugly                
+                $scope.options.minLength = $scope.tagMinLength || $scope.options.minLength;
 
                 $scope.newTag = '';
                 
