@@ -1,10 +1,8 @@
 /*globals console: true*/
 'use strict';
-/*** data-ng-tag-highlight ***********************************************************************************************
- *
+/**
  * Provides highlight for matched text inside tag attributes
- *
- ***********************************************************************************************************************/
+ */
 cxTags.directive('ngTagHighlight', [
     function() {
 
