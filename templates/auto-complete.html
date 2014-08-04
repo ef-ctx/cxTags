@@ -9,7 +9,7 @@
                 </li>
                 <li class="attributes">
                     <ul>
-                        <li ng-repeat="(key, value) in item.attributes | filterAttributes " class="tag-attribute">
+                        <li ng-repeat="(key, value) in item.attributes | filterAttributes " class="tag-attribute" data-ng-if="value.length > 0">
                             <span class="tag-attribute-key">{{ key }}</span>
                             <span class="tag-attribute-value" data-ng-tag-highlight="{{ value }}"></span>
                         </li>
