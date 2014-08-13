@@ -1,3 +1,39 @@
+### v1.1.1 (2014-08-13)
+
+#### Bug Fixes
+
+* hover fix. The text was illegible ([e1b22470](http://github.com/ef-ctx/cxTags/commit/e1b22470e215308ce4deb6ca54e86a2b0f2f51bb))
+* **pattern:** / and : were not allowed ([73fac05a](http://github.com/ef-ctx/cxTags/commit/73fac05af25b92298dbd00055f8426eb265ced76))
+
+#### Features
+
+* **autocomplete:** Hide empty fields ([b4138ada](http://github.com/ef-ctx/cxTags/commit/b4138adafa46fcae12dd314808a3cd69165d4281))
+* **dropdown:** isDropdown property added ([724dd2f2](http://github.com/ef-ctx/cxTags/commit/724dd2f205fcd9bef070c9dfca7e72fe5853d180))
+
+### v1.1.1 (2014-08-13)
+
+#### Bug Fixes
+
+* hover fix. The text was illegible ([e1b22470](http://github.com/ef-ctx/cxTags/commit/e1b22470e215308ce4deb6ca54e86a2b0f2f51bb))
+* **pattern:** / and : were not allowed ([73fac05a](http://github.com/ef-ctx/cxTags/commit/73fac05af25b92298dbd00055f8426eb265ced76))
+
+#### Features
+
+* **autocomplete:** Hide empty fields ([b4138ada](http://github.com/ef-ctx/cxTags/commit/b4138adafa46fcae12dd314808a3cd69165d4281))
+* **dropdown:** isDropdown property added ([724dd2f2](http://github.com/ef-ctx/cxTags/commit/724dd2f205fcd9bef070c9dfca7e72fe5853d180))
+
+### v1.1.1 (2014-08-08)
+
+#### Bug Fixes
+
+* hover fix. The text was illegible ([e1b22470](http://github.com/ef-ctx/cxTags/commit/e1b22470e215308ce4deb6ca54e86a2b0f2f51bb))
+* **pattern:** / and : were not allowed ([73fac05a](http://github.com/ef-ctx/cxTags/commit/73fac05af25b92298dbd00055f8426eb265ced76))
+
+#### Features
+
+* **autocomplete:** Hide empty fields ([b4138ada](http://github.com/ef-ctx/cxTags/commit/b4138adafa46fcae12dd314808a3cd69165d4281))
+* **dropdown:** isDropdown property added ([724dd2f2](http://github.com/ef-ctx/cxTags/commit/724dd2f205fcd9bef070c9dfca7e72fe5853d180))
+
 ### v1.1.1 (2014-08-04)
 
 #### Bug Fixes

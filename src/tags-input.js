@@ -86,7 +86,7 @@ cxTags.directive('tagsInput', [
             templateUrl: 'cxTags/tags-input.html',
             controller: function($scope, $attrs, $element) {
                 var shouldRemoveLastTag;
- 
+
                 // directive values have a higher priority that those setten on config
                 tagsInputConfig.load('tagsInput', $scope, $attrs, {
                     customClass: [String],
@@ -98,10 +98,10 @@ cxTags.directive('tagsInput', [
                     addOnSpace: [Boolean, false],
                     addOnComma: [Boolean, true],
                     addOnBlur: [Boolean, true],
-                    allowedTagsPattern: [RegExp, /^[\-\_\s\:\/a-zA-Z0-9]+$/],
+                    allowedTagsPattern: [RegExp, /^[\-\_\s\:\;\.\,\/a-zA-Z0-9]+$/],
                     enableEditingLastTag: [Boolean, false]
                 });
-                
+
                 $scope.tagMinLength = $scope.tagMinLength || DEFAULT_VALUES.tagMinLength;
                 $scope.isDropdown = $scope.isDropdown || DEFAULT_VALUES.isDropDown;
                 $scope.newTag = '';
@@ -139,8 +139,8 @@ cxTags.directive('tagsInput', [
                         exists = ((tag) && (tag.label) && (angular.isString(tag.label))),
                         tooShort = (exists && tag.label.length < $scope.minLength),
                         tooMany = (exists && $scope.maxTags && ($scope.tags.length > $scope.maxTags - 1)),
-                        patternAllowed = (exists && $scope.options.allowedTagsPattern.test(tag.label)),
-                        isValidTag = exists && !tooShort && !tooMany && patternAllowed;
+                        //patternAllowed = (exists && $scope.options.allowedTagsPattern.test(tag.label)),
+                        isValidTag = exists && !tooShort && !tooMany;// && patternAllowed;
 
                     if (angular.isArray($scope.tags) && isValidTag) {
                         if ($scope.isDropdown) {
