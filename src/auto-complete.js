@@ -290,12 +290,15 @@ cxTags.directive('autoComplete', [
     function() {
         return function(input) {
             var result = angular.copy(input);
-            if (result.examples) {
+
+            if (result && result.examples) {
                 delete result.examples;
             }
-            if (input.compassId) {
+
+            if (result && result.compassId) {
                 delete result.compassId;
             }
+
             return result;
         };
     }
