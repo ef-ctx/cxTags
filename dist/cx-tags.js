@@ -5,7 +5,7 @@
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-08-13 11:12:32 +0100
+ * Generated at 2014-11-25 10:25:24 +0000
  */
 (function() {
 'use strict';
@@ -711,12 +711,15 @@ cxTags.directive('autoComplete', [
     function() {
         return function(input) {
             var result = angular.copy(input);
-            if (result.examples) {
+
+            if (result && result.examples) {
                 delete result.examples;
             }
-            if (input.compassId) {
+
+            if (result && result.compassId) {
                 delete result.compassId;
             }
+
             return result;
         };
     }
